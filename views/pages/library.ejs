@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <% include ../partials/header.ejs %>
+</head>
+
+<body>
+
+  <% include ../partials/nav.ejs %>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <h1>Your Library</h1>
+            </div>
+            <div class="card-body">
+                <table class="table">
+                    <thead>
+                      <tr>
+                        <th>Title</th>
+                        <th>Blurb</th>
+                        <th>Author</th>
+                        <th>Details</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+
+                        <% books.forEach(function(book) { %>
+                        <tr>    
+                            <td><%= book.title %></td>
+                            <td><%= book.blurb %></td>
+                            <td><%= book.name %></td>
+                            <td><button id=<%= book.book_id %>><%= book.book_id %></button></td>
+                           
+                        </tr>    
+                        <% }); %>
+                      
+                    </tbody>
+                  </table>
+            </div>
+        </div>
+        <div class="card" id="resultsCard">
+            <div class="card-body">
+                <div id="results"></div>
+            </div>
+        </div>
+    </div>
+    <script>
+    
+        $(document).ready(function(){
+        $(document).on("click","button",function( event ){
+            
+            //var id= toString((this.id));
+            var id = this.id;
+            event.preventDefault();
+
+            idObj = new Object();
+            idObj.id = id;
+            console.log(idObj);
+            var data = $.param(idObj);
+
+            //var data = $("form").serialize();
+            data += '&format=json';
+    
+            $.ajax({
+                url: "/details",
+                type: "GET",
+                data: data,
+                complete: function(response) {
+                    $("#resultsCard").css("display", "block");
+                    $('#results').text(response.responseText);
+                }
+            });
+        });
+        });
+
+     
+    
+      </script>
+
+    
+</body>
+</html>
