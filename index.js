@@ -17,7 +17,7 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 
 //Test databse connection
-/* var sql = "SELECT * FROM book";
+ var sql = "SELECT * FROM book";
 pool.query(sql, function(err, result) {
     // If an error occurred...
     if (err) {
@@ -28,7 +28,7 @@ pool.query(sql, function(err, result) {
     // Log this to the console for debugging purposes.
     console.log("Back from DB with result:");
     console.log(result.rows);
-});  */ 
+});  
 
 
 
