@@ -1,6 +1,6 @@
+require('dotenv').config();
 const path = require('path');
 const express = require('express');
-require('dotenv').config();
 const app = express();
 const port = process.env.PORT || 5000;
 //Connection Pool
@@ -28,7 +28,7 @@ pool.query(sql, function(err, result) {
     // Log this to the console for debugging purposes.
     console.log("Back from DB with result:");
     console.log(result.rows);
-});  */
+});  */ 
 
 
 
