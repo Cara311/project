@@ -105,8 +105,16 @@ app.listen(port, function() {
         const details = result;
         console.log(details);
 
-        res.setHeader('Content-Type', 'application/json');
-        res.end(JSON.stringify(details));
+        
+
+        //res.render('userTemplate', details ,function(err, html) {
+        //res.send(html); });
+        res.render('pages/userTemplate', {details: details});
+
+        //res.setHeader('Content-Type', 'application/json');
+        //res.end(JSON.stringify(details));
+
+
         //res.render('pages/library', {details: details});
         //res.end(JSON.stringify(books));
       
@@ -119,7 +127,7 @@ app.listen(port, function() {
 
   function getDetailsFromDB(id, callback) {
     
-    const sql = "SELECT title FROM book WHERE ID = $1::int"; // Note that we can make
+    const sql = "SELECT blurb FROM book WHERE ID = $1::int"; // Note that we can make
     var params = [id];
     
     pool.query(sql, params, function(err, result) {

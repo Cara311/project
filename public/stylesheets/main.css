@@ -17,6 +17,12 @@
         color: #D4AF37;
       }
 
+      h2 {
+        font-family: 'Merriweather', serif;
+        color: #D4AF37;
+        font-size: 25px;
+      }
+
       p {
         font-family: 'Merriweather', serif;
       }
@@ -43,6 +49,9 @@
         text-decoration: none;
       }
 
+      #resultsCard {
+        display: none;
+      }
     
 
       
