@@ -10,13 +10,49 @@ const { response } = require('express');
 //Connection String to Database
 const connectionString = process.env.DATABASE_URL;
 const pool = new Pool({connectionString: connectionString, ssl: {rejectUnauthorized: false}});
-// tell it to use the public directory as one where static files live
+const libraryController = require("./controllers/librarycontroller.js");
+
 app.use(express.static(__dirname + '/public'));
+app.use(express.json()); //Support json encoded body
+app.use(express.urlencoded({extended: true})); //Support url encoded body
+
 // views is directory for all template files
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 
-//Test databse connection
+app.get('/', (req, res) => res.render('/pages/index'));
+
+//Get all books
+app.get("/books", libraryController.getBooks);
+
+//Get book by title
+app.get("/title", libraryController.getBookByTitle);
+
+//Get book by author
+app.get("/author", libraryController.getBookByAuthor);
+
+//Get book by genre
+app.get("/genre", libraryController.getBookByGenre);
+
+//Search for books
+app.get("/search", libraryController.search);
+
+//Add books
+app.post("/add", libraryController.addBook);
+
+//Get library page with all books listed
+//app.get('/library', getBooks);
+
+//Get book details
+app.get('/details', getDetails);
+
+
+
+// start the server listening
+app.listen(port, function() {
+  console.log('Node app is running on port', port);
+
+  //Test databse connection
 /* var sql = "SELECT * FROM book";
 pool.query(sql, function(err, result) {
     // If an error occurred...
@@ -29,17 +65,6 @@ pool.query(sql, function(err, result) {
     console.log("Back from DB with result:");
     console.log(result.rows);
 });  */
-
-
-
-app.get('/', (req, res) => res.render('pages/index'));
-//app.get('/library', (req, res) => res.render('pages/library'));
-app.get('/library', getBooks);
-app.get('/details', getDetails);
-
-// start the server listening
-app.listen(port, function() {
-  console.log('Node app is running on port', port);
 });
     
   /**********************************************************************

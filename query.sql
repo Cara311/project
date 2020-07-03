@@ -113,6 +113,28 @@ JOIN book_author AS a
 ON a.book_id = b.id
 WHERE a.author_id = 5;
 
+--Get Book Info & Author
+SELECT * FROM book AS b
+JOIN book_author AS a
+ON a.book_id = b.id
+JOIN authors 
+ON authors.id = a.author_id
+JOIN book_genre AS bg
+ON bg.book_id = b.id
+JOIN genres AS g
+ON g.id = bg.genre_id
+AND g.genre = 'Fantasy';
+
+--Get Book Info & Author
+SELECT * FROM book AS b
+JOIN book_genre AS bg
+ON bg.book_id = b.id
+JOIN genres AS g
+ON g.id = bg.book_id
+WHERE g.genre = "Fantasy";
+
+
+
 --Get Book Details
 SELECT * FROM book AS b
 JOIN book_author AS a
@@ -133,11 +155,7 @@ ON g.book_id = b.id
 WHERE b.id = 1;
 
 --Get Book Title, Blurb, and Author
-SELECT id, title, blurb, name FROM book as b
-JOIN book_author AS a
-ON a.book_id = b.id
-JOIN authors 
-ON authors.id = a.author_id;
+ 
 
 
 
@@ -168,3 +186,6 @@ pool.query(sql, function(err, result) {
 }); 
 
 
+SELECT book_id, title, blurb, name FROM book as b JOIN book_author AS a ON a.book_id = b.id JOIN authors ON authors.id = a.author_id AND b.title='The Cat in the Hat';
+SELECT id, title, blurb FROM book WHERE title = 'The Caldera';
+SELECT * FROM book AS b JOIN book_author AS a ON a.book_id = b.id JOIN authors ON authors.id = a.author_id JOIN book_genre AS bg ON bg.book_id = b.id JOIN genres AS g ON g.id = bg.genre_id AND g.genre = 'Fantasy';

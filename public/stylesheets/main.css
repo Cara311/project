@@ -34,10 +34,11 @@
       .mainbtn {
         background-color: transparent;
         border: 2px solid #D4AF37;
+        color: #D4AF37;
       }
 
       .mainbtn:hover {
-        border: 2px solid rgb(155, 33, 33);
+        background-color: #d4af3775;
       }
 
       a {
@@ -53,5 +54,11 @@
         display: none;
       }
     
+      #navigation {
+        padding-top: 20px;
+        padding-bottom: 20px;
+      }
 
-      
+      table {
+        background-color: #ffffffb2;
+      }

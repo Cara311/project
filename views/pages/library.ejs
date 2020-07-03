@@ -28,7 +28,7 @@
                         <tr>    
                             <td><%= book.title %></td>
                             <td><%= book.name %></td>
-                            <td><button id=<%= book.book_id %>>Book Details</button></td>
+                            <td><button class="btn btn-warning" id=<%= book.book_id %>>Book Details</button></td>
                            
                         </tr>    
                         <% }); %>
@@ -49,43 +49,7 @@
             </div>
         </div>
     </div>
-    <script>
-    
-        $(document).ready(function(){
-        $(document).on("click","button",function( event ){
-            
-            //var id= toString((this.id));
-            var id = this.id;
-            event.preventDefault();
-
-            idObj = new Object();
-            idObj.id = id;
-            console.log(idObj);
-            var data = $.param(idObj);
-
-            //var data = $("form").serialize();
-            data += '&format=json';
-    
-            $.ajax({
-                url: "/details",
-                type: "GET",
-                data: data,
-                complete: function(response) {
-                    $("#resultsCard").css("display", "block");
-                    $('#book').text(response.responseText);
-                    //$('#book').innerHTML(html);
-                    //$('#book').html(response.responseText);
-                    //$('#results').innerHTML(html);
-
-                }
-            });
-        });
-        });
-
-     
-    
-      </script>
-
+    <script src="../../public/scripts/library.js"></script>
     
 </body>
 </html>
