@@ -25,7 +25,7 @@
           <a href="#" onclick="searchByTitle()"><span class="glyphicon glyphicon-book"></span> Get Book Suggestion</a>
         </li>
         <li>
-          <a href="#" onclick="searchByTitle()"><span class="glyphicon glyphicon-bookmark"></span> Add Book to Library</a>
+          <a href="#" onclick="addBook()"><span class="glyphicon glyphicon-bookmark"></span> Add Book to Library</a>
         </li> 
         <li>
           <input type="text" id="title" placeholder="Title"><br><button class="btn-sm mainbtn" onclick="searchByTitle()">Search By Title</button>
@@ -49,10 +49,11 @@
       <h1 class="display-4 font-weight-bold mb-4">My Home Library</h1>
       <p class="lead mb-0" id="sub">Discover What's in Your Library</p>
     </header>
+    
 
 
     <div class="row">
-      <div class="col-sm-2"></div>
+      <div class="col-sm-2" id="error"></div>
       <div class="col-sm-8">
         <div class="card">
           <div class="card-header">
@@ -76,13 +77,65 @@
       </div>
       <div class="col-sm-2"></div>
     </div>
-   
+
+    <div class="row">
+      <div class="col-sm-3"></div>
+      <div class="col-sm-6">
+        <div class="card">
+          <div class="card-header">
+              <h1>Book Details</h1>
+          </div>
+          <div class="card-body">
+              <table class="table" id="libraryTable">
+                  <thead>
+                    <tr>
+                      <th>Title</th>
+                      <th>Blurb</th>
+                      <th>Author</th>
+                      <th>Genre</th>
+                      <th>Being Read</th>
+                      
+                    </tr>
+                  </thead>
+                  <tbody id="detailResults">
+                  </tbody>
+                </table>
+          </div>
+      </div>
+      </div>
+      <div class="col-sm-3"></div>
+    </div>
+
+      <div class="row">
+        <div class="col-sm-3"></div>
+        <div class="col-sm-6">
+          <div class="card">
+            <div class="card-header">
+                <h1>Add Book</h1>
+            </div>
+            <div class="card-body">
+              <!-- <form class="form-inline" id="bookForm"> -->
+                <label for="btitle">Book Title:</label>
+                <input type="text" class="form-control" placeholder="Enter title" id="btitle">
+                <label for="bblurb">Blurb:</label>
+                <input type="text" class="form-control" placeholder="Enter blurb" id="bblurb">
+                <label for="bauthor">Author:</label>
+                <input type="text" class="form-control" placeholder="Enter author" id="bauthor">
+                <label for="bgenre">Genre:</label>
+                <input type="text" class="form-control" placeholder="Enter genre" id="bgenre"> <!--Make a select list-->
+                <label for="uid">Your User Id:</label>
+                <input type="number" class="form-control" placeholder="Enter User Id" id="uid">
+                <button class="btn-sm mainbtn" onclick="addBook()">Add Book</button>
+              <!-- </form>   -->
+            </div>
+        </div>
+        </div>
+        <div class="col-sm-3"></div>
+      </div>
 
   </div>
 </div>
-<div class="container">
 
-</div>
   
 
 

@@ -5,6 +5,9 @@ CREATE TABLE users
     name VARCHAR(255) NOT NULL 
 );
 
+ALTER TABLE users 
+RENAME COLUMN name TO user_name;
+
 CREATE TABLE book
 (
     id SERIAL PRIMARY KEY NOT NULL,
@@ -35,6 +38,12 @@ CREATE TABLE authors
     name VARCHAR(255) NOT NULL
 );
 
+ALTER TABLE authors
+ADD CONSTRAINT name_unique UNIQUE (name);
+
+DELETE FROM authors
+WHERE id = 9;
+
 CREATE TABLE book_author
 (
     author_id INT REFERENCES authors(id),
@@ -56,6 +65,7 @@ CREATE TABLE book_genre
 INSERT INTO users(name) VALUES ('Guest');
 INSERT INTO users(name) VALUES ('Roger');
 INSERT INTO users(name) VALUES ('Cara');
+INSERT INTO users(name) VALUES ('No User');
 
 INSERT INTO book(title, blurb) VALUES ('Eternal Marriage', 'Eternal marriage cannot work without commitment.');
 INSERT INTO book(title, blurb) VALUES ('Beezus and Ramona', 'Beezus tries to be patient with her sister, Ramona, but it is not easy.');
@@ -64,6 +74,8 @@ INSERT INTO book(title, blurb) VALUES ('The Caldera', 'The seventh book in the B
 INSERT INTO book(title, blurb) VALUES ('Twenty-One Days', 'Daniel Pitt must prevent an innocent man from hanging.');
 INSERT INTO book(title, blurb) VALUES ('Words of Radiance', 'Book two of the Stormlight Archive.');
 INSERT INTO book(title, blurb) VALUES ('Off Armageddon Reef', 'Merlin must save Safehold from the Gbaba.');
+
+UPDATE book_author SET author_id = 8 WHERE author_id = 9;
 
 INSERT INTO authors(name) VALUES ('F. Burton Howard');
 INSERT INTO authors(name) VALUES ('Beverly Cleary');
@@ -103,9 +115,87 @@ INSERT INTO book_genre(genre_id, book_id) VALUES (5, 5);
 INSERT INTO book_genre(genre_id, book_id) VALUES (3, 6);
 INSERT INTO book_genre(genre_id, book_id) VALUES (1, 7);
 INSERT INTO book_genre(genre_id, book_id) VALUES (2, 7);
+INSERT INTO book_genre(genre_id, book_id) VALUES (3, 8);
 
+DELETE FROM status
+WHERE out = false;
+
+INSERT INTO status(out, book_id, user_id) VALUES (false, 1, 4);
+INSERT INTO status(out, book_id, user_id) VALUES (false, 2, 4);
+INSERT INTO status(out, book_id, user_id) VALUES (false, 3, 4);
+INSERT INTO status(out, book_id, user_id) VALUES (false, 4, 2);
 INSERT INTO status(out, book_id, user_id) VALUES (true, 5, 3);
+INSERT INTO status(out, book_id, user_id) VALUES (false, 6, 4);
+INSERT INTO status(out, book_id, user_id) VALUES (false, 7, 4);
+INSERT INTO status(out, book_id, user_id) VALUES (false, 8, 4);
+
+INSERT INTO read(read, book_id, user_id) VALUES (false, 1, null);
+INSERT INTO read(read, book_id, user_id) VALUES (true, 2, 3);
+INSERT INTO read(read, book_id, user_id) VALUES (true, 3, 3);
+INSERT INTO read(read, book_id, user_id) VALUES (true, 4, 3);
+INSERT INTO read(read, book_id, user_id) VALUES (true, 5, 3);
 INSERT INTO read(read, book_id, user_id) VALUES (true, 6, 3);
+INSERT INTO read(read, book_id, user_id) VALUES (true, 7, 3);
+INSERT INTO read(read, book_id, user_id) VALUES (true, 7, 3);
+
+
+BEGIN;
+INSERT INTO book(title, blurb ) VALUES ();
+INSERT INTO author(name) VALUES ();
+INSERT INTO 
+COMMIT;
+
+--Book and Author Insert
+WITH first_insert AS (
+   INSERT INTO book(title, blurb) 
+   VALUES('The Hobbit','A hobbit goes on an adventure with dwarves.') 
+   RETURNING id
+), 
+second_insert AS (
+  INSERT INTO authors(name) 
+  VALUES('J.R.R Tolkien')
+  RETURNING id
+),
+third_insert AS (
+    INSERT INTO book_genre(genre_id, book_id)
+    VALUES ( 1 , (SELECT id FROM first_insert));
+)--TODO: test third insert 
+INSERT INTO book_author ( author_id ,book_id) 
+VALUES
+( (SELECT id FROM first_insert), (SELECT id FROM second_insert));
+
+
+--Book and Author Insert (working)
+WITH first_insert AS (
+   INSERT INTO book(title, blurb) 
+   VALUES('Martin the Warrior','The story of the famous Martin the warrior.') 
+   RETURNING id
+), 
+second_insert AS (
+  INSERT INTO authors(name) 
+  VALUES('Brian Jacques')
+  ON CONFLICT (name) 
+    DO NOTHING
+  RETURNING id
+),
+third_insert AS (
+    INSERT INTO book_genre(genre_id, book_id)
+    VALUES ( 3 , (SELECT id FROM first_insert))
+),
+fourth_insert AS (
+    INSERT INTO status(out, book_id, user_id) 
+    VALUES(false, (SELECT id FROM first_insert), 1) 
+),
+fifth_insert AS (
+    INSERT INTO read(read, book_id, user_id) 
+    VALUES(false, (SELECT id FROM first_insert), 1) 
+)
+INSERT INTO book_author(author_id ,book_id) 
+VALUES
+( (SELECT author_id FROM book_author JOIN authors ON authors.id = book_author.author_id WHERE authors.name = 'Brian Jacques'), (SELECT id FROM first_insert));
+
+
+
 
 --Get Book Info & Author
 SELECT * FROM book AS b
@@ -113,8 +203,14 @@ JOIN book_author AS a
 ON a.book_id = b.id
 WHERE a.author_id = 5;
 
---Get Book Info & Author
 SELECT * FROM book AS b
+JOIN book_author AS a
+ON a.book_id = b.id
+JOIN authors 
+ON authors.id = a.author_id;
+
+--Get Book Info, Author, Genre
+SELECT title, blurb, genre FROM book AS b
 JOIN book_author AS a
 ON a.book_id = b.id
 JOIN authors 
@@ -125,13 +221,38 @@ JOIN genres AS g
 ON g.id = bg.genre_id
 AND g.genre = 'Fantasy';
 
---Get Book Info & Author
+--Get Book Details with read
 SELECT * FROM book AS b
+JOIN book_author AS a
+ON a.book_id = b.id
+JOIN authors 
+ON authors.id = a.author_id
+JOIN read as r
+ON r.book_id = b.id
+JOIN users as u
+ON u.id = r.user_id
 JOIN book_genre AS bg
 ON bg.book_id = b.id
 JOIN genres AS g
-ON g.id = bg.book_id
-WHERE g.genre = "Fantasy";
+ON g.id = bg.genre_id
+AND b.id = 6;
+
+--Get Book Details with status
+SELECT * FROM book AS b
+JOIN book_author AS a
+ON a.book_id = b.id
+JOIN authors 
+ON authors.id = a.author_id
+JOIN status as s
+ON s.book_id = b.id
+JOIN users as u
+ON u.id = s.user_id
+JOIN book_genre AS bg
+ON bg.book_id = b.id
+JOIN genres AS g
+ON g.id = bg.genre_id
+AND b.id = 19;
+-
 
 
 
@@ -189,3 +310,5 @@ pool.query(sql, function(err, result) {
 SELECT book_id, title, blurb, name FROM book as b JOIN book_author AS a ON a.book_id = b.id JOIN authors ON authors.id = a.author_id AND b.title='The Cat in the Hat';
 SELECT id, title, blurb FROM book WHERE title = 'The Caldera';
 SELECT * FROM book AS b JOIN book_author AS a ON a.book_id = b.id JOIN authors ON authors.id = a.author_id JOIN book_genre AS bg ON bg.book_id = b.id JOIN genres AS g ON g.id = bg.genre_id AND g.genre = 'Fantasy';
+SELECT * FROM book AS b JOIN book_author AS a ON a.book_id = b.id JOIN authors ON authors.id = a.author_id JOIN status as s ON s.book_id = b.id JOIN users as u ON u.id = s.user_id JOIN book_genre AS bg ON bg.book_id = b.id JOIN genres AS g ON g.id = bg.genre_id AND b.id = 5;
+WITH first_insert AS (INSERT INTO book(title, blurb) VALUES('Redwall 2','Cluny the Scourge attacks the creatures of Redwall Abbey.') RETURNING id), second_insert AS (INSERT INTO authors(name)VALUES('Brian Jac') RETURNING id), third_insert AS (INSERT INTO book_genre(genre_id, book_id) VALUES ( 3, (SELECT id FROM first_insert))), fourth_insert AS (INSERT INTO status(out, book_id, user_id) VALUES(false, (SELECT id FROM first_insert), 1)), fifth_insert AS (INSERT INTO read(read, book_id, user_id) VALUES(false, (SELECT id FROM first_insert), 1)) INSERT INTO book_author(author_id ,book_id)VALUES((SELECT id FROM second_insert), (SELECT id FROM first_insert));

@@ -62,3 +62,7 @@
       table {
         background-color: #ffffffb2;
       }
+
+    .error {
+      color: red;
+    }

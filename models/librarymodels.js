@@ -70,49 +70,44 @@ function getBookByGenre(genre, callback) {
     }) 
 }
 
-function insertBook(name, blurb, callback) {
-    //Create new book with info.
-    var results = {success: true};
-    callback(results);
+
+function getDetails(id, callback) {
+    const sql = "SELECT * FROM book AS b JOIN book_author AS a ON a.book_id = b.id JOIN authors ON authors.id = a.author_id JOIN status as s ON s.book_id = b.id JOIN users as u ON u.id = s.user_id JOIN book_genre AS bg ON bg.book_id = b.id JOIN genres AS g ON g.id = bg.genre_id AND b.id=$1::int;";
+    var params = [id];
+    console.log(params);
+    pool.query(sql, params, function(err, result) {
+        if (err) {
+          console.log("An error with the database occurred");
+          console.log(err);
+          callback(err, null);
+        } else {
+        console.log(result);    
+        callback(null, result.rows);
+        }
+    }) 
 }
 
-function searchByTitle(title, callback) {
-    console.log("searching for " + title);
-    var results = {
-        books: [
-            {id: 1, title:title, blurb: "The book"},
-            {id: 2, title:"Book2", blurb: "The book2"}
-        ]
-    };
-    callback(results);
-}
-
-function searchByAuthor(authorId, callback) {
-    var results = {
-        books: [
-            {id: 1, name:"Book1", blurb: "The book"},
-            {id: 2, name:"Book2", blurb: "The book2"}
-        ]
-    };
-    callback(results);
-
-}
-
-function searchByGenre(genreId, callback) {
-    var results = {
-        books: [
-            {id: 1, name:"Book1", blurb: "The book"},
-            {id: 2, name:"Book2", blurb: "The book2"}
-        ]
-    };
-    callback(results);
-
+function insertBook(title, blurb, author, genre, user, callback) {
+    const sql = "WITH first_insert AS (INSERT INTO book(title, blurb) VALUES($1::text, $2::text) RETURNING id), second_insert AS (INSERT INTO authors(name)VALUES($3::text) ON CONFLICT (name) DO NOTHING RETURNING id), third_insert AS (INSERT INTO book_genre(genre_id, book_id) VALUES ( $4::INT, (SELECT id FROM first_insert))), fourth_insert AS (INSERT INTO status(out, book_id, user_id) VALUES(false, (SELECT id FROM first_insert), $5::INT)), fifth_insert AS (INSERT INTO read(read, book_id, user_id) VALUES(false, (SELECT id FROM first_insert), $5::INT)) INSERT INTO book_author(author_id ,book_id)VALUES((SELECT author_id FROM book_author JOIN authors ON authors.id = book_author.author_id WHERE authors.name=$3::TEXT), (SELECT id FROM first_insert));";
+    //var params = [title, blurb, author, genre, user];
+    var params = [title, blurb, author, genre, user];
+    console.log(params);
+    pool.query(sql, params, function(err, result) {
+        if (err) {
+          console.log("An error with the database occurred");
+          console.log(err);
+          callback(err, null);
+        } else {
+         var success = true;   
+        console.log(result);    
+        callback(null, success);
+        }
+    }) 
 }
 
 module.exports = {
-    searchByTitle: searchByTitle,
-    searchByAuthor: searchByAuthor,
-    searchByGenre: searchByGenre,
+    getDetails: getDetails,
+
     getBooks: getBooks,
     getBookByTitle: getBookByTitle,
     getBookByAuthor: getBookByAuthor,

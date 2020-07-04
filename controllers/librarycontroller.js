@@ -46,36 +46,35 @@ function getBookByTitle(req,res) {
    }); 
   }
 
+  //Get Book Details
+  function getDetails(req,res) {
+    var id = req.query.id;
+    console.log("Getting book details");
+   librarymodels.getDetails(id, function(error, results) {
+    if (!error) {
+        res.json(results); //This is the callback function
+    }
+   }); 
+  }
+
   function addBook(req, res) {
-    var name = req.body.name;
+    var title = req.body.title;
     var blurb = req.body.blurb;
-    console.log("Adding a new book: " + name);
-    librarymodels.insertBook(name, blurb, function(results) {
-        res.json(results);
-    });
+    var author = req.body.author;
+    var genre = req.body.genre;
+    var user = req.body.user;
+
+    console.log("Adding a new book: " + title);
+     librarymodels.insertBook(title, blurb, author, genre, user, function(results) {
+            res.json(results);
+      
+        
+    }); 
   }
 
-  function search(req, res) {
-      //TODO: check if book id, author id, or genre id and call appropriate function
-      var title = req.query.title; //TODO: from query
-      librarymodels.searchByTitle(title, function(results) {
-          res.json(results);
-      });
-
-     /*  var authorid;
-      librarymodels.searchByAuthor(authorId, function(results) {
-        res.json(results);
-    });
-
-    var genreid;
-    librarymodels.searchByGenre(genreId, function(results) {
-        res.json(results);
-    }); */
-
-  }
 
   module.exports = {
-      search: search,
+      getDetails: getDetails,
       getBooks: getBooks,
       getBookByTitle: getBookByTitle,
       getBookByAuthor: getBookByAuthor,
