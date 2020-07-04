@@ -165,17 +165,16 @@ VALUES
 ( (SELECT id FROM first_insert), (SELECT id FROM second_insert));
 
 
---Book and Author Insert (working)
+--Book and Author Insert (Not Working)
 WITH first_insert AS (
    INSERT INTO book(title, blurb) 
-   VALUES('Martin the Warrior','The story of the famous Martin the warrior.') 
+   VALUES('Test','The story of the famous Martin the warrior.') 
    RETURNING id
 ), 
 second_insert AS (
   INSERT INTO authors(name) 
-  VALUES('Brian Jacques')
-  ON CONFLICT (name) 
-    DO NOTHING
+  VALUES('Bob Sam')
+  ON CONFLICT (name) DO NOTHING
   RETURNING id
 ),
 third_insert AS (
@@ -192,7 +191,27 @@ fifth_insert AS (
 )
 INSERT INTO book_author(author_id ,book_id) 
 VALUES
-( (SELECT author_id FROM book_author JOIN authors ON authors.id = book_author.author_id WHERE authors.name = 'Brian Jacques'), (SELECT id FROM first_insert));
+( (SELECT author_id FROM book_author JOIN authors ON authors.id = book_author.author_id WHERE authors.name = 'Bob Sam'), (SELECT id FROM first_insert));
+
+--Book and Genre Insert
+WITH first_insert AS (
+   INSERT INTO book(title, blurb) 
+   VALUES('Test','The story of the famous Martin the warrior.') 
+   RETURNING id
+), 
+third_insert AS (
+    INSERT INTO book_genre(genre_id, book_id)
+    VALUES ( 3 , (SELECT id FROM first_insert))
+),
+fourth_insert AS (
+    INSERT INTO status(out, book_id, user_id) 
+    VALUES(false, (SELECT id FROM first_insert), 1) 
+)
+    INSERT INTO read(read, book_id, user_id) 
+    VALUES(false, (SELECT id FROM first_insert), 1);
+
+
+
 
 
 
@@ -311,4 +330,5 @@ SELECT book_id, title, blurb, name FROM book as b JOIN book_author AS a ON a.boo
 SELECT id, title, blurb FROM book WHERE title = 'The Caldera';
 SELECT * FROM book AS b JOIN book_author AS a ON a.book_id = b.id JOIN authors ON authors.id = a.author_id JOIN book_genre AS bg ON bg.book_id = b.id JOIN genres AS g ON g.id = bg.genre_id AND g.genre = 'Fantasy';
 SELECT * FROM book AS b JOIN book_author AS a ON a.book_id = b.id JOIN authors ON authors.id = a.author_id JOIN status as s ON s.book_id = b.id JOIN users as u ON u.id = s.user_id JOIN book_genre AS bg ON bg.book_id = b.id JOIN genres AS g ON g.id = bg.genre_id AND b.id = 5;
-WITH first_insert AS (INSERT INTO book(title, blurb) VALUES('Redwall 2','Cluny the Scourge attacks the creatures of Redwall Abbey.') RETURNING id), second_insert AS (INSERT INTO authors(name)VALUES('Brian Jac') RETURNING id), third_insert AS (INSERT INTO book_genre(genre_id, book_id) VALUES ( 3, (SELECT id FROM first_insert))), fourth_insert AS (INSERT INTO status(out, book_id, user_id) VALUES(false, (SELECT id FROM first_insert), 1)), fifth_insert AS (INSERT INTO read(read, book_id, user_id) VALUES(false, (SELECT id FROM first_insert), 1)) INSERT INTO book_author(author_id ,book_id)VALUES((SELECT id FROM second_insert), (SELECT id FROM first_insert));
+WITH first_insert AS (INSERT INTO book(title, blurb) VALUES('Test','This is a test book.') RETURNING id), second_insert AS (INSERT INTO authors(name)VALUES('Brian Jac') ON CONFLICT (name) DO NOTHING RETURNING id), third_insert AS (INSERT INTO book_genre(genre_id, book_id) VALUES ( 3, (SELECT id FROM first_insert))), fourth_insert AS (INSERT INTO status(out, book_id, user_id) VALUES(false, (SELECT id FROM first_insert), 1)) INSERT INTO read(read, book_id, user_id) VALUES(false, (SELECT id FROM first_insert), 1); INSERT INTO book_author(author_id ,book_id)VALUES((SELECT author_id FROM authors JOIN book_author ON book_author.author_id = authors.id), (SELECT id FROM book WHERE title = 'Test')); 
+WITH first_insert AS (INSERT INTO book(title, blurb) VALUES($1::text, $2::text) RETURNING id), second_insert AS (INSERT INTO authors(name)VALUES($3::text) ON CONFLICT (name) DO NOTHING RETURNING id), third_insert AS (INSERT INTO book_genre(genre_id, book_id) VALUES ( $4::INT, (SELECT id FROM first_insert))), fourth_insert AS (INSERT INTO status(out, book_id, user_id) VALUES(false, (SELECT id FROM first_insert), $5::INT)), fifth_insert AS (INSERT INTO read(read, book_id, user_id) VALUES(false, (SELECT id FROM first_insert), $5::INT); INSERT INTO book_author(author_id ,book_id)VALUES((SELECT id from second_insert), (SELECT id FROM first_insert));

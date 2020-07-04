@@ -1,6 +1,39 @@
+$(document).ready(function(){
+    $.get("/authors", function(data) { 
+        //console.log("Back with: ");
+        //console.log(data);
+        $("#error").empty();
+        if(data < 1) {
+            $('#error').append("<p class='error'>Unable to find any authors</p>")
+        }
+        $("#bauthor").empty();
+        for (var i = 0; i < data.rows.length; i++) {
+            var author = data.rows[i];
+            //console.log(book);
+            //$("#ulBooks").append("<li>" + book.title + " " + book.name + "</li>");
 
-    $("#bookForm").hide();
-    $("detailResults").hide();
+            $("#bauthor").append("<option value='" + author.id + "'>" + author.name + "</option>");
+        }
+    })
+
+    $.get("/genres", function(data) { 
+        //console.log("Back with: ");
+        //console.log(data);
+        $("#error").empty();
+        if(data < 1) {
+            $('#error').append("<p class='error'>Unable to find any genres</p>")
+        }
+        $("#bgenre").empty();
+        for (var i = 0; i < data.rows.length; i++) {
+            var genre = data.rows[i];
+            //console.log(book);
+            //$("#ulBooks").append("<li>" + book.title + " " + book.name + "</li>");
+
+            $("#bgenre").append("<option value='" + genre.id + "'>" + genre.genre + "</option>");
+        }
+    })
+    
+  });
 
     function getBooks() {
         console.log("Searching for books...");
@@ -8,6 +41,7 @@
         $.get("/books", function(data) { 
             //console.log("Back with: ");
             //console.log(data);
+            $("#error").empty();
             if(data < 1) {
                 $('#error').append("<p class='error'>Unable to find any books</p>")
             }
@@ -29,6 +63,7 @@
         $.get("/title", {title:title}, function(data) { //Do the ajax request then do this when you come back.
             //console.log("Back with: ");
             //console.log(data);
+            $("#error").empty();
             if(data < 1) {
                 $('#error').append("<p class='error'>Unable to find title</p>")
             }
@@ -50,12 +85,12 @@
         $.get("/author", {author:author}, function(data) { //Do the ajax request then do this when you come back.
             //console.log("Back with: ");
             //console.log(data);
+            $("#error").empty();
             if(data < 1) {
                 $('#error').append("<p class='error'>Unable to find author</p>")
             }
-
+            $("#tableResults").empty();
              for (var i = 0; i < data.length; i++) {
-                $("#tableResults").empty();
                 var book = data[i];
                 //console.log(book);
                 $("#tableResults").append("<tr><td>" + book.title + "</td><td>" + book.name + "</td><td><button class='btn btn-warning' id='" + book.book_id + "'onclick='getDetails(this.id)'>Get Details</button></td>");
@@ -71,6 +106,7 @@
         $.get("/genre", {genre:genre}, function(data) { //Do the ajax request then do this when you come back.
             //console.log("Back with: ");
             //console.log(data);
+            $("#error").empty();
             if(data < 1) {
                 $('#error').append("<p class='error'>Unable to find genre</p>")
             }
@@ -91,6 +127,7 @@
         $.get("/details", {id:id}, function(data) { //Do the ajax request then do this when you come back.
             console.log("Back with: ");
             console.log(data);
+            $("#error").empty();
 
             if(data < 1) {
                 $('#error').append("<p class='error'>Unable to get details</p>")

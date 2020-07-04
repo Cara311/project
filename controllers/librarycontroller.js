@@ -10,6 +10,30 @@ function getBooks(req,res) {
         }
     }) 
   }
+
+  //Get all the authors
+function getAuthors(req,res) {
+    console.log("Getting Authors"); 
+
+    librarymodels.getAuthors(function(error, results) {
+        if (!error) {
+            res.json(results); //This is the callback function
+        }
+    }) 
+  }
+
+    //Get all the genres
+function getGenres(req,res) {
+    console.log("Getting Genres"); 
+
+    librarymodels.getGenres(function(error, results) {
+        if (!error) {
+            res.json(results); //This is the callback function
+        }
+    }) 
+  }
+
+
 //Get the book by title
 function getBookByTitle(req,res) {
     var title = req.query.title;
@@ -74,6 +98,8 @@ function getBookByTitle(req,res) {
 
 
   module.exports = {
+      getAuthors: getAuthors,
+      getGenres: getGenres,
       getDetails: getDetails,
       getBooks: getBooks,
       getBookByTitle: getBookByTitle,

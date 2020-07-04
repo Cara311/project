@@ -19,6 +19,36 @@ function getBooks(callback) {
       })     
 }
 
+function getAuthors(callback) {
+    const sql = "SELECT id, name FROM authors;";
+
+    pool.query(sql, function(err, result) {
+        if (err) {
+          //console.log("An error with the database occurred");
+          //console.log(err);
+          callback(err, null);
+        } else {
+        //console.log(result);    
+        callback(null, result);
+        }
+      })     
+}
+
+function getGenres(callback) {
+    const sql = "SELECT id, genre FROM genres;";
+
+    pool.query(sql, function(err, result) {
+        if (err) {
+          //console.log("An error with the database occurred");
+          //console.log(err);
+          callback(err, null);
+        } else {
+        //console.log(result);    
+        callback(null, result);
+        }
+      })     
+}
+
 //Find the book by searching for the title
 function getBookByTitle(title, callback) {
     const sql = "SELECT book_id, title, blurb, name FROM book as b JOIN book_author AS a ON a.book_id = b.id JOIN authors ON authors.id = a.author_id AND b.title=$1::text";
@@ -88,7 +118,7 @@ function getDetails(id, callback) {
 }
 
 function insertBook(title, blurb, author, genre, user, callback) {
-    const sql = "WITH first_insert AS (INSERT INTO book(title, blurb) VALUES($1::text, $2::text) RETURNING id), second_insert AS (INSERT INTO authors(name)VALUES($3::text) ON CONFLICT (name) DO NOTHING RETURNING id), third_insert AS (INSERT INTO book_genre(genre_id, book_id) VALUES ( $4::INT, (SELECT id FROM first_insert))), fourth_insert AS (INSERT INTO status(out, book_id, user_id) VALUES(false, (SELECT id FROM first_insert), $5::INT)), fifth_insert AS (INSERT INTO read(read, book_id, user_id) VALUES(false, (SELECT id FROM first_insert), $5::INT)) INSERT INTO book_author(author_id ,book_id)VALUES((SELECT author_id FROM book_author JOIN authors ON authors.id = book_author.author_id WHERE authors.name=$3::TEXT), (SELECT id FROM first_insert));";
+    const sql = "WITH first_insert AS (INSERT INTO book(title, blurb) VALUES($1::text, $2::text) RETURNING id), second_insert AS (INSERT INTO authors(name)VALUES($3::text) RETURNING id), third_insert AS (INSERT INTO book_genre(genre_id, book_id) VALUES ( $4::INT, (SELECT id FROM first_insert))), fourth_insert AS (INSERT INTO status(out, book_id, user_id) VALUES(false, (SELECT id FROM first_insert), $5::INT)), fifth_insert AS (INSERT INTO read(read, book_id, user_id) VALUES(false, (SELECT id FROM first_insert), $5::INT)) INSERT INTO book_author(author_id ,book_id)VALUES((SELECT id FROM second_insert), (SELECT id FROM first_insert));";
     //var params = [title, blurb, author, genre, user];
     var params = [title, blurb, author, genre, user];
     console.log(params);
@@ -107,7 +137,8 @@ function insertBook(title, blurb, author, genre, user, callback) {
 
 module.exports = {
     getDetails: getDetails,
-
+    getGenres: getGenres,
+    getAuthors: getAuthors,
     getBooks: getBooks,
     getBookByTitle: getBookByTitle,
     getBookByAuthor: getBookByAuthor,

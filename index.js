@@ -31,8 +31,14 @@ app.get("/title", libraryController.getBookByTitle);
 //Get book by author
 app.get("/author", libraryController.getBookByAuthor);
 
+//Get Authors
+app.get("/authors", libraryController.getAuthors);
+
 //Get book by genre
 app.get("/genre", libraryController.getBookByGenre);
+
+//Get genres
+app.get("/genres", libraryController.getGenres);
 
 //Add books
 app.post("/add", libraryController.addBook);
