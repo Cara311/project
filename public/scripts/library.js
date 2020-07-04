@@ -162,6 +162,7 @@ $(document).ready(function(){
 
          $.post('/add', {title:title, blurb:blurb, author:author, genre:genre, user:user}, function(data) {
             console.log("Back with: " + data);
+            $('.success').empty();
             $('.success').append("<p>Book has been added</p>");
             $('#btitle').val("");
             $('#bblurb').val("");
@@ -175,6 +176,7 @@ $(document).ready(function(){
 
          $.post('/addauthor', {author:author}, function(data) {
             console.log("Back with: " + data);
+            $('.success').empty();
             $('.success').append("<p>Author has been added</p>");
             //Clear form fields
             $('#aname').val("");

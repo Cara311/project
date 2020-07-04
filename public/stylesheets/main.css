@@ -67,8 +67,8 @@
       color: red;
     }
     .success {
-      color: green;
-      background-color: #ffffffb2;
+      color: rgb(6, 196, 6);
+      font-size: 20px;
     }
     label {
       color: #D4AF37;
