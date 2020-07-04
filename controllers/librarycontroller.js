@@ -89,15 +89,27 @@ function getBookByTitle(req,res) {
     var user = req.body.user;
 
     console.log("Adding a new book: " + title);
+    console.log(author);
+    console.log(genre);
+
      librarymodels.insertBook(title, blurb, author, genre, user, function(results) {
-            res.json(results);
-      
-        
+            res.json(results);  
+    }); 
+  }
+
+  function addAuthor(req, res) {
+    var author = req.body.author;
+    console.log("Adding a new author: " + author);
+  
+     librarymodels.insertAuthor(author, function(results) {
+            res.json(results); 
+            console.log(results); 
     }); 
   }
 
 
   module.exports = {
+      addAuthor: addAuthor,
       getAuthors: getAuthors,
       getGenres: getGenres,
       getDetails: getDetails,

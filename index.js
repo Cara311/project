@@ -43,6 +43,9 @@ app.get("/genres", libraryController.getGenres);
 //Add books
 app.post("/add", libraryController.addBook);
 
+//Add author
+app.post("/addauthor", libraryController.addAuthor);
+
 //Get library page with all books listed
 //app.get('/library', getBooks);
 

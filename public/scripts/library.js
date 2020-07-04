@@ -145,7 +145,6 @@ $(document).ready(function(){
     }
 
     function addBook() {
-        console.log("Here");
         var title = $("#btitle").val();
         var blurb = $("#bblurb").val();
         var author = $("#bauthor").val();
@@ -154,6 +153,21 @@ $(document).ready(function(){
 
          $.post('/add', {title:title, blurb:blurb, author:author, genre:genre, user:user}, function(data) {
             console.log("Back with: " + data);
+            $('.success').append("<p>Book has been added</p>");
+            $('#btitle').val("");
+            $('#bblurb').val("");
+            $('#bauthor').val("");
+        }) 
+    }
+
+    function addAuthor() {
+        var author = $("#aname").val();
+
+         $.post('/addauthor', {author:author}, function(data) {
+            console.log("Back with: " + data);
+            $('.success').append("<p>Author has been added</p>");
+            //Clear form fields
+            $('#aname').val("");
         }) 
     }
 

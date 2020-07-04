@@ -118,8 +118,8 @@ function getDetails(id, callback) {
 }
 
 function insertBook(title, blurb, author, genre, user, callback) {
-    const sql = "WITH first_insert AS (INSERT INTO book(title, blurb) VALUES($1::text, $2::text) RETURNING id), second_insert AS (INSERT INTO authors(name)VALUES($3::text) RETURNING id), third_insert AS (INSERT INTO book_genre(genre_id, book_id) VALUES ( $4::INT, (SELECT id FROM first_insert))), fourth_insert AS (INSERT INTO status(out, book_id, user_id) VALUES(false, (SELECT id FROM first_insert), $5::INT)), fifth_insert AS (INSERT INTO read(read, book_id, user_id) VALUES(false, (SELECT id FROM first_insert), $5::INT)) INSERT INTO book_author(author_id ,book_id)VALUES((SELECT id FROM second_insert), (SELECT id FROM first_insert));";
-    //var params = [title, blurb, author, genre, user];
+    const sql = "WITH first_insert AS (INSERT INTO book(title, blurb) VALUES($1::text, $2::text) RETURNING id), third_insert AS (INSERT INTO book_genre(genre_id, book_id) VALUES ( $4::INT, (SELECT id FROM first_insert))), fourth_insert AS (INSERT INTO status(out, book_id, user_id) VALUES(false, (SELECT id FROM first_insert), $5::INT)), fifth_insert AS (INSERT INTO read(read, book_id, user_id) VALUES(false, (SELECT id FROM first_insert), $5::INT)) INSERT INTO book_author(author_id ,book_id)VALUES($3::INT, (SELECT id FROM first_insert));";
+
     var params = [title, blurb, author, genre, user];
     console.log(params);
     pool.query(sql, params, function(err, result) {
@@ -135,7 +135,24 @@ function insertBook(title, blurb, author, genre, user, callback) {
     }) 
 }
 
+function insertAuthor(author, callback) {
+    const sql = "INSERT INTO authors(name) VALUES($1::TEXT)";
+    var params = [author];
+    console.log(params);
+    pool.query(sql, params, function(err, result) {
+        if (err) {
+          console.log("An error with the database occurred");
+          console.log(err);
+          callback(err, null);
+        } else {  
+        var success = true;
+        callback(null, success);
+        }
+    }) 
+}
+
 module.exports = {
+    insertAuthor: insertAuthor,
     getDetails: getDetails,
     getGenres: getGenres,
     getAuthors: getAuthors,
