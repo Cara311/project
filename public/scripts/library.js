@@ -1,4 +1,13 @@
 $(document).ready(function(){
+        $('#btitle').val("");
+        $('#bblurb').val("");
+        $('#bauthor').val("");
+        $('#aname').val("");
+        $('#title').val("");
+        $('#author').val("");
+        $('#genre').val("");
+        $('#uid').val("");
+
     $.get("/authors", function(data) { 
         //console.log("Back with: ");
         //console.log(data);
@@ -157,6 +166,7 @@ $(document).ready(function(){
             $('#btitle').val("");
             $('#bblurb').val("");
             $('#bauthor').val("");
+            $('#uid').val("");
         }) 
     }
 
