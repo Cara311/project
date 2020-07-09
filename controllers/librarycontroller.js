@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt');
 //Get all the books
 function getBooks(req,res) {
     console.log("Getting Books"); 
+   
 
     librarymodels.getBooks(function(error, results) {
         if (!error) {
@@ -11,6 +12,13 @@ function getBooks(req,res) {
         }
     }) 
   }
+
+//Get the session id
+function getSessionId(req, res) {
+  var user_id = req.session.userid;
+  console.log("Getting session id: " + user_id);
+  res.json(user_id);
+}  
 
   //Get all the authors
 function getAuthors(req,res) {
@@ -87,13 +95,10 @@ function getBookByTitle(req,res) {
     var blurb = req.body.blurb;
     var author = req.body.author;
     var genre = req.body.genre;
-    var user = req.body.user;
-
+   
     console.log("Adding a new book: " + title);
-    console.log(author);
-    console.log(genre);
-
-     librarymodels.insertBook(title, blurb, author, genre, user, function(results) {
+   
+     librarymodels.insertBook(title, blurb, author, genre, function(results) {
             
             result = {success: true}; 
             res.json(result); 
@@ -123,19 +128,20 @@ function getBookByTitle(req,res) {
   function checkInOut(req, res) {
     var id = req.query.id;
     var status = req.query.out;
-    console.log("Checking Book " + status);
+    var user_id = req.session.userid;
+    console.log("Checking Book for: " + user_id);
 
-     if(status == 'false') {
-      librarymodels.checkOut(id, function(error, results) {
+      if(status == 'false') {
+      librarymodels.checkOut(id, user_id, function(error, results) {
         console.log('Checked out');
         res.json({success: true, out:true}); 
       });
     } else {
-      librarymodels.checkIn(id, function(error, results) {
+      librarymodels.checkIn(id, user_id, function(error, results) {
         console.log('Checked In');
         res.json({success: true, out:false}); 
       });
-    } 
+    }  
   
   }
 
@@ -172,8 +178,11 @@ function getBookByTitle(req,res) {
           var info = results.rows[i];
           console.log(info);
         }
+
+        var id = info.id;
         var user = info.username;
         var hash = info.password;
+        var id = info.id;
         var password = request.body.password;
         var test = bcrypt.compareSync(password, hash);
         
@@ -181,6 +190,7 @@ function getBookByTitle(req,res) {
         // We should do better error checking here to make sure the parameters are present
         if (request.body.username == user && test == true) {
           request.session.user = request.body.username;
+          request.session.userid = id;
           result = {success: true};
         }
         response.json(result); 
@@ -239,10 +249,23 @@ function logRequest(request, response, next) {
 	next();
 }
 
+function verifySession(request, response, next) {
+	if (request.session.userid) {
+		// They are logged in!
+		// pass things along to the next function
+		next();
+	} else {
+    request.session.userid=0;
+    next();
+	}
+}
+
 
 
 
   module.exports = {
+    getSessionId: getSessionId,
+    verifySession: verifySession,
     checkInOut: checkInOut,
     removeBook: removeBook,
     register: register,

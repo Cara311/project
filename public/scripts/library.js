@@ -1,3 +1,5 @@
+//const session = require("express-session");
+
 $(document).ready(function(){
         $('#btitle').val("");
         $('#bblurb').val("");
@@ -8,6 +10,7 @@ $(document).ready(function(){
         $('#genre').val("");
         $('#uid').val("");
 
+   
     $.get("/authors", function(data) { 
         //console.log("Back with: ");
         //console.log(data);
@@ -53,20 +56,32 @@ $(document).ready(function(){
         $("#checked").empty();
        
         $.get("/books", function(data) { 
-            //console.log("Back with: ");
-            //console.log(data);
-            $("#error").empty();
-            if(data < 1) {
-                $('#error').append("<p class='error'>Unable to find any books</p>")
-            }
-            $("#tableResults").empty();
-            for (var i = 0; i < data.rows.length; i++) {
-                var book = data.rows[i];
-                //console.log(book);
-                //$("#ulBooks").append("<li>" + book.title + " " + book.name + "</li>");
+            console.log("Back with: ");
+            console.log(data);
 
-                $("#tableResults").append("<tr id='bookRow'><td>" + book.title + "</td><td>" + book.name + "</td><td><button class='btn tableBtn' id='" + book.book_id + "'onclick='getDetails(this.id)'>Get Details</button></td><td><button class='btn removeBtn' id='" + book.book_id + "'onclick='removeBook(this.id)'> X </button></td>");
-            }
+            $.get("/session_id", function(user) {
+                var user_id = user;
+               
+                $("#error").empty();
+                if(data < 1) {
+                    $('#error').append("<p class='error'>Unable to find any books</p>")
+                } else {
+                    $("#tableResults").empty();
+                    for (var i = 0; i < data.rows.length; i++) {
+                        var book = data.rows[i];
+
+
+                        if(book.user_id != undefined && user_id > 0) {
+                            $("#tableResults").append("<tr id='bookRow'><td>" + book.title + "</td><td>" + book.name + "</td><td>" + book.read + "</td><td><button class='btn tableBtn' id='" + book.book_id + "'onclick='getDetails(this.id)'>Get Details</button></td><td><button class='btn removeBtn' id='" + book.book_id + "'onclick='removeBook(this.id)'> X </button></td>");
+                        } else {
+                            $("#tableResults").append("<tr id='bookRow'><td>" + book.title + "</td><td>" + book.name + "</td><td>N/A</td><td><button class='btn tableBtn' id='" + book.book_id + "'onclick='getDetails(this.id)'>Get Details</button></td><td><button class='btn removeBtn' id='" + book.book_id + "'onclick='removeBook(this.id)'> X </button></td>");
+                        } 
+                        
+                    }
+                }
+
+             })
+
         })
     }
 
@@ -191,9 +206,8 @@ $(document).ready(function(){
         var blurb = $("#bblurb").val();
         var author = $("#bauthor").val();
         var genre = $("#bgenre").val();
-        var user = $("#uid").val();
-
-         $.post('/add', {title:title, blurb:blurb, author:author, genre:genre, user:user}, function(result) {
+       
+         $.post('/add', {title:title, blurb:blurb, author:author, genre:genre}, function(result) {
 
             if (result && result.success) {
                 $(".success").text("Book added.");

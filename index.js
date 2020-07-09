@@ -1,6 +1,7 @@
 require('dotenv').config();
 const path = require('path');
 const express = require('express');
+const session = require("express-session");
 //const bcrypt = require('bcrypt');
 const app = express();
 const port = process.env.PORT || 3000;
@@ -17,7 +18,7 @@ const libraryController = require("./controllers/librarycontroller.js");
 app.use(express.static(__dirname + '/public'));
 app.use(express.json()); //Support json encoded body
 app.use(express.urlencoded({extended: true})); //Support url encoded body
-var session = require('express-session'); //Use sessions
+//var session = require('express-session'); //Use sessions
 
 //Set Up Sessions
 app.use(session({
@@ -47,8 +48,8 @@ app.set('view engine', 'ejs');
 
 app.get('/', (req, res) => res.render('/pages/index'));
 
-//Get all books
-app.get("/books", libraryController.getBooks);
+//Get all books but verify if user is logged in to determine info to display
+app.get("/books", libraryController.verifySession, libraryController.getBooks);
 
 //Get book by title
 app.get("/title", libraryController.getBookByTitle);
@@ -82,6 +83,9 @@ app.post("/addauthor", libraryController.verifyLogin, libraryController.addAutho
 
 //Get book details
 app.get('/details', libraryController.getDetails);
+
+//Get the user id for the session
+app.get('/session_id', libraryController.getSessionId);
 
 
 

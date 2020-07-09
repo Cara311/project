@@ -21,6 +21,7 @@
         font-family: 'Merriweather', serif;
         color: #D4AF37;
         font-size: 25px;
+        text-shadow: 2px 2px 2px #000;
       }
 
       p {
