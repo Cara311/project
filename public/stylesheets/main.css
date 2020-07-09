@@ -64,12 +64,55 @@
       }
 
     .error {
-      color: red;
+      color: #a71111;
     }
     .success {
-      color: rgb(6, 196, 6);
+      color: rgb(6, 151, 6);
       font-size: 20px;
+    }
+
+    #message {
+      color: rgb(6, 151, 6);
+      font-size: 20px;
+    }
+
+    #error {
+      color: #a71111;
     }
     label {
       color: #D4AF37;
+    }
+
+    #status {
+      font-size: 15px;
+      color: rgb(6, 151, 6);
+    }
+
+    #checkedstat {
+      font-size: 15px;
+      color: rgb(6, 151, 6);
+    }
+
+    input {
+      margin-right: 10px;
+    }
+
+    .tableBtn {
+      background-color: #D4AF37;
+      color: #fff;
+    }
+
+    .tableBtn:hover {
+      background-color: #e7bf3c;
+      color: #fff;
+    }
+
+    .removeBtn {
+      background-color: #830b0b;
+      color: #fff;
+    }
+
+    .removeBtn:hover {
+      background-color: #a71111;
+      color: #fff;
     }

@@ -5,6 +5,15 @@ CREATE TABLE users
     name VARCHAR(255) NOT NULL 
 );
 
+CREATE TABLE admin_user
+(
+    id SERIAL PRIMARY KEY NOT NULL,
+    username VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL 
+);
+
+INSERT INTO admin_user(username, password) VALUES ('test', 'password');
+
 ALTER TABLE users 
 RENAME COLUMN name TO user_name;
 
@@ -43,6 +52,31 @@ ADD CONSTRAINT name_unique UNIQUE (name);
 
 DELETE FROM authors
 WHERE id = 9;
+
+DELETE FROM book_author WHERE book_id = 38;
+DELETE FROM book_genre WHERE book_id = 38;
+DELETE FROM status WHERE book_id = 38;
+DELETE FROM read WHERE book_id = 38;
+DELETE FROM book WHERE id = 38;
+
+
+
+WITH first_delete AS (
+   DELETE FROM book_author WHERE book_id = 43
+), 
+second_delete AS (
+    DELETE FROM book_genre WHERE book_id = 43
+),
+third_delete AS (
+    DELETE FROM status WHERE book_id = 43
+),
+fourth_delete AS (
+    DELETE FROM read WHERE book_id = 43
+)
+DELETE FROM book WHERE id = 43;
+
+
+
 
 CREATE TABLE book_author
 (
@@ -129,6 +163,8 @@ INSERT INTO status(out, book_id, user_id) VALUES (false, 6, 4);
 INSERT INTO status(out, book_id, user_id) VALUES (false, 7, 4);
 INSERT INTO status(out, book_id, user_id) VALUES (false, 8, 4);
 
+UPDATE status SET out = true WHERE book_id = 39;
+
 INSERT INTO read(read, book_id, user_id) VALUES (false, 1, null);
 INSERT INTO read(read, book_id, user_id) VALUES (true, 2, 3);
 INSERT INTO read(read, book_id, user_id) VALUES (true, 3, 3);
@@ -193,6 +229,28 @@ INSERT INTO book_author(author_id ,book_id)
 VALUES
 ( (SELECT author_id FROM book_author JOIN authors ON authors.id = book_author.author_id WHERE authors.name = 'Bob Sam'), (SELECT id FROM first_insert));
 
+--Book and Author Insert (With Ids)
+WITH first_insert AS (
+   INSERT INTO book(title, blurb) 
+   VALUES('Test','The story of the famous Martin the warrior.') 
+   RETURNING id
+), 
+third_insert AS (
+    INSERT INTO book_genre(genre_id, book_id)
+    VALUES ( 3 , (SELECT id FROM first_insert))
+),
+fourth_insert AS (
+    INSERT INTO status(out, book_id, user_id) 
+    VALUES(false, (SELECT id FROM first_insert), 1) 
+),
+fifth_insert AS (
+    INSERT INTO read(read, book_id, user_id) 
+    VALUES(false, (SELECT id FROM first_insert), 1) 
+)
+INSERT INTO book_author(author_id ,book_id) 
+VALUES
+( (1), (SELECT id FROM first_insert));
+
 --Book and Genre Insert
 WITH first_insert AS (
    INSERT INTO book(title, blurb) 
@@ -210,6 +268,12 @@ fourth_insert AS (
     INSERT INTO read(read, book_id, user_id) 
     VALUES(false, (SELECT id FROM first_insert), 1);
 
+--Author Insert
+
+INSERT INTO authors(name) 
+  VALUES('Bob Sam')
+  ON CONFLICT (name) DO NOTHING
+  RETURNING id
 
 
 
@@ -227,6 +291,9 @@ JOIN book_author AS a
 ON a.book_id = b.id
 JOIN authors 
 ON authors.id = a.author_id;
+
+--Get Book Authors
+SELECT 
 
 --Get Book Info, Author, Genre
 SELECT title, blurb, genre FROM book AS b
@@ -332,3 +399,4 @@ SELECT * FROM book AS b JOIN book_author AS a ON a.book_id = b.id JOIN authors O
 SELECT * FROM book AS b JOIN book_author AS a ON a.book_id = b.id JOIN authors ON authors.id = a.author_id JOIN status as s ON s.book_id = b.id JOIN users as u ON u.id = s.user_id JOIN book_genre AS bg ON bg.book_id = b.id JOIN genres AS g ON g.id = bg.genre_id AND b.id = 5;
 WITH first_insert AS (INSERT INTO book(title, blurb) VALUES('Test','This is a test book.') RETURNING id), second_insert AS (INSERT INTO authors(name)VALUES('Brian Jac') ON CONFLICT (name) DO NOTHING RETURNING id), third_insert AS (INSERT INTO book_genre(genre_id, book_id) VALUES ( 3, (SELECT id FROM first_insert))), fourth_insert AS (INSERT INTO status(out, book_id, user_id) VALUES(false, (SELECT id FROM first_insert), 1)) INSERT INTO read(read, book_id, user_id) VALUES(false, (SELECT id FROM first_insert), 1); INSERT INTO book_author(author_id ,book_id)VALUES((SELECT author_id FROM authors JOIN book_author ON book_author.author_id = authors.id), (SELECT id FROM book WHERE title = 'Test')); 
 WITH first_insert AS (INSERT INTO book(title, blurb) VALUES($1::text, $2::text) RETURNING id), second_insert AS (INSERT INTO authors(name)VALUES($3::text) ON CONFLICT (name) DO NOTHING RETURNING id), third_insert AS (INSERT INTO book_genre(genre_id, book_id) VALUES ( $4::INT, (SELECT id FROM first_insert))), fourth_insert AS (INSERT INTO status(out, book_id, user_id) VALUES(false, (SELECT id FROM first_insert), $5::INT)), fifth_insert AS (INSERT INTO read(read, book_id, user_id) VALUES(false, (SELECT id FROM first_insert), $5::INT); INSERT INTO book_author(author_id ,book_id)VALUES((SELECT id from second_insert), (SELECT id FROM first_insert));
+WITH first_delete AS (DELETE FROM book_author WHERE book_id = 43), second_delete AS (DELETE FROM book_genre WHERE book_id = 43), third_delete AS (DELETE FROM status WHERE book_id = 43), fourth_delete AS (DELETE FROM read WHERE book_id = 43) DELETE FROM book WHERE id = 43;

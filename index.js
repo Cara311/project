@@ -1,12 +1,14 @@
 require('dotenv').config();
 const path = require('path');
 const express = require('express');
+//const bcrypt = require('bcrypt');
 const app = express();
 const port = process.env.PORT || 3000;
 //Connection Pool
 // Following the "Single query" approach from: https://node-postgres.com/features/pooling#single-query
 const { Pool } = require("pg");  // This is the postgres database connection module.
 const { response } = require('express');
+
 //Connection String to Database
 const connectionString = process.env.DATABASE_URL;
 const pool = new Pool({connectionString: connectionString, ssl: {rejectUnauthorized: false}});
@@ -15,6 +17,29 @@ const libraryController = require("./controllers/librarycontroller.js");
 app.use(express.static(__dirname + '/public'));
 app.use(express.json()); //Support json encoded body
 app.use(express.urlencoded({extended: true})); //Support url encoded body
+var session = require('express-session'); //Use sessions
+
+//Set Up Sessions
+app.use(session({
+  secret: 'my-super-secret-secret!',
+  resave: false,
+  saveUninitialized: true
+}));
+
+/* app.use(function printSession(req, res, next) {
+  console.log('req.session', req.session);
+  return next();
+}); */
+
+app.use(libraryController.logRequest);
+
+// Setup our routes
+app.post('/login', libraryController.handleLogin);
+app.post('/logout', libraryController.handleLogout);
+app.post('/register', libraryController.register);
+
+// This method has a middleware function "verifyLogin" that will be called first
+app.get('/getServerTime', libraryController.verifyLogin, libraryController.getServerTime);
 
 // views is directory for all template files
 app.set('views', __dirname + '/views');
@@ -41,10 +66,16 @@ app.get("/genre", libraryController.getBookByGenre);
 app.get("/genres", libraryController.getGenres);
 
 //Add books
-app.post("/add", libraryController.addBook);
+app.post("/add", libraryController.verifyLogin, libraryController.addBook);
+
+//Remove Books
+app.get("/remove", libraryController.verifyLogin, libraryController.removeBook);
+
+//Check books in or out
+app.get("/checkInOut", libraryController.verifyLogin, libraryController.checkInOut);
 
 //Add author
-app.post("/addauthor", libraryController.addAuthor);
+app.post("/addauthor", libraryController.verifyLogin, libraryController.addAuthor);
 
 //Get library page with all books listed
 //app.get('/library', getBooks);
