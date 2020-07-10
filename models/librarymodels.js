@@ -119,7 +119,7 @@ function getDetails(id, callback) {
 }
 
 function removeBook(id, callback) {
-  const sql ="WITH first_delete AS (DELETE FROM book_author WHERE book_id = $1::int), second_delete AS (DELETE FROM book_genre WHERE book_id = $1::int), third_delete AS (DELETE FROM status WHERE book_id = $1::int), fourth_delete AS (DELETE FROM read WHERE book_id = $1::int) DELETE FROM book WHERE id = $1::int;";
+  const sql ="WITH first_delete AS (DELETE FROM book_author WHERE book_id = $1::int), second_delete AS (DELETE FROM book_genre WHERE book_id = $1::int), third_delete AS (DELETE FROM status WHERE book_id = $1::int), fourth_delete AS (DELETE FROM read WHERE book_id = $1::int RETURNING id), fifth_delete AS (DELETE FROM read_status WHERE read_id=(SELECT id FROM fourth_delete) ) DELETE FROM book WHERE id = $1::int;";
   var params = [id];
     console.log(params);
     pool.query(sql, params, function(err, result) {
@@ -246,9 +246,24 @@ function check(username, callback) {
     }) 
 }
 
+function getCheckedBooks(user_id, callback) {
+  const sql = "SELECT title, out FROM book LEFT JOIN status ON status.book_id = book.id LEFT JOIN checked ON checked.status_id = status.id WHERE user_id=$1::INT;";
+  var params = [user_id];
+
+  pool.query(sql, params, function(err, result) {
+      if (err) {
+        callback(err, null);
+      } else {
+      //console.log(result);    
+      callback(null, result);
+      }
+    }) 
+}
+
 
 
 module.exports = {
+    getCheckedBooks: getCheckedBooks,
     markRead: markRead,
     checkOut: checkOut,
     checkIn: checkIn,

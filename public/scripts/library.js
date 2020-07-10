@@ -69,9 +69,13 @@ $(document).ready(function(){
                     $("#tableResults").empty(); //Empty the table
                     for (var i = 0; i < data.rows.length; i++) {
                         var book = data.rows[i];
-                        //Check to see if the id of the person signed in matches any of the user ids of the info
+                        //Check to see if there is a user id from returned info and check to make sure someone is signed in
                         if(book.user_id != undefined && user_id > 0) {
-                            $("#tableResults").append("<tr id='bookRow'><td>" + book.title + "</td><td>" + book.name + "</td><td class='check'> &#10004; </td><td><button class='btn tableBtn' id='" + book.book_id + "'onclick='getDetails(this.id)'>Get Details</button></td><td><button class='btn removeBtn' id='" + book.book_id + "'onclick='removeBook(this.id)'> X </button></td>");
+                            if(user_id == book.user_id) { //Check to see if the id of the person signed in matches the user id returned
+                                $("#tableResults").append("<tr id='bookRow'><td>" + book.title + "</td><td>" + book.name + "</td><td class='check'> &#10004; </td><td><button class='btn tableBtn' id='" + book.book_id + "'onclick='getDetails(this.id)'>Get Details</button></td><td><button class='btn removeBtn' id='" + book.book_id + "'onclick='removeBook(this.id)'> X </button></td>");
+                            } else {
+                                $("#tableResults").append("<tr id='bookRow'><td>" + book.title + "</td><td>" + book.name + "</td><td id='x'> X </td><td><button class='btn tableBtn' id='" + book.book_id + "'onclick='getDetails(this.id)'>Get Details</button></td><td><button class='btn removeBtn' id='" + book.book_id + "'onclick='removeBook(this.id)'> X </button></td>");
+                            }
                         } else {
                             $("#tableResults").append("<tr id='bookRow'><td>" + book.title + "</td><td>" + book.name + "</td><td id='x'> X </td><td><button class='btn tableBtn' id='" + book.book_id + "'onclick='getDetails(this.id)'>Get Details</button></td><td><button class='btn removeBtn' id='" + book.book_id + "'onclick='removeBook(this.id)'> X </button></td>");
                         } 
@@ -94,10 +98,11 @@ $(document).ready(function(){
             if(data < 1) {
                 $('#error').append("<p class='error'>Unable to find title</p>")
             } else {
+                $("#tableResults").empty();
+                $("#detailResults").empty();
+                $('#title').val("");
                 for (var i = 0; i < data.length; i++) {
-                    $("#tableResults").empty();
-                    $("#detailResults").empty();
-                    $('#title').val("");
+                   
                     var book = data[i];
                     //console.log(book);
                     if(book.user_id != undefined && user_id > 0) {
@@ -118,18 +123,18 @@ $(document).ready(function(){
         var author = $("#author").val();
         //console.log(author);
         $.get("/author", {author:author}, function(data) { //Do the ajax request then do this when you come back.
-            //console.log("Back with: ");
-            //console.log(data);
+            console.log("Back with author books: ");
+            console.log(data);
             $.get("/session_id", function(user) {
                 var user_id = user;
                 $("#error").empty();
             if(data < 1) {
-                $('#error').append("<p class='error'>Unable to find title</p>")
+                $('#error').append("<p class='error'>Unable to find author</p>")
             } else {
-                for (var i = 0; i < data.length; i++) {
                     $("#tableResults").empty();
                     $("#detailResults").empty();
                     $('#title').val("");
+                for (var i = 0; i < data.length; i++) {
                     var book = data[i];
                     //console.log(book);
                     if(book.user_id != undefined && user_id > 0) {
@@ -154,12 +159,13 @@ $(document).ready(function(){
                 var user_id = user;
                 $("#error").empty();
             if(data < 1) {
-                $('#error').append("<p class='error'>Unable to find title</p>")
+                $('#error').append("<p class='error'>Unable to find genre</p>")
             } else {
+                $("#tableResults").empty();
+                $("#detailResults").empty();
+                $('#title').val("");
                 for (var i = 0; i < data.length; i++) {
-                    $("#tableResults").empty();
-                    $("#detailResults").empty();
-                    $('#title').val("");
+                   
                     var book = data[i];
                     //console.log(book);
                     if(book.user_id != undefined && user_id > 0) {
@@ -191,12 +197,26 @@ $(document).ready(function(){
                 $("#detailResults").empty();
                for (var i = 0; i < data.length; i++) {
                    var book = data[i];
-                   console.log(book.user_id)
+                   console.log(book.user_id);
+                   console.log(book.out);
                    if(user_id > 0) {
-                        if(book.out === false && book.read === false) {
-                            $("#detailResults").append("<tr><td>" + book.title + "</td><td>" + book.blurb + "</td><td>" + book.name + "</td><td>" + book.genre + "</td><td><button class='btn checkBtn' id='" + book.book_id + "' onclick='markRead(this.id," + book.out + ")'>&#10004;</button></td><td><button class='btn tableBtn' id='" + book.book_id + "' onclick='checkInOut(this.id," + book.out + ")'>Check Out</button></td>");
-                        } else{
-                            $("#detailResults").append("<tr><td>" + book.title + "</td><td>" + book.blurb + "</td><td>" + book.name + "</td><td>" + book.genre + "</td><td class='check'>&#10004;</td><td><button class='btn tableBtn' id='" + book.book_id + "' onclick='checkInOut(this.id," + book.out + ")'>Check Out</button></td>");
+                        if(user_id == book.user_id) {
+                            $("#detailResults").empty();
+                            if(book.out === false && book.read === false) {
+                                $("#detailResults").append("<tr><td>" + book.title + "</td><td>" + book.blurb + "</td><td>" + book.name + "</td><td>" + book.genre + "</td><td><button class='btn checkBtn' id='" + book.book_id + "' onclick='markRead(this.id," + book.out + ")'>&#10004;</button></td><td><button class='btn tableBtn' id='" + book.book_id + "' onclick='checkInOut(this.id," + book.out + ")'>Check Out</button></td>");
+                            } else if(book.out === false && book.read === true) {
+                                $("#detailResults").append("<tr><td>" + book.title + "</td><td>" + book.blurb + "</td><td>" + book.name + "</td><td>" + book.genre + "</td><td class='check'> &#10004; </td><td><button class='btn tableBtn' id='" + book.book_id + "' onclick='checkInOut(this.id," + book.out + ")'>Check Out</button></td>");
+                            } else if(book.out === true && book.read === false) {
+                                $("#detailResults").append("<tr><td>" + book.title + "</td><td>" + book.blurb + "</td><td>" + book.name + "</td><td>" + book.genre + "</td><td><button class='btn checkBtn' id='" + book.book_id + "' onclick='markRead(this.id," + book.out + ")'>&#10004;</button></td><td><button class='btn tableBtn' id='" + book.book_id + "' onclick='checkInOut(this.id," + book.out + ")'>Check In</button></td>");
+                            } else{
+                                $("#detailResults").append("<tr><td>" + book.title + "</td><td>" + book.blurb + "</td><td>" + book.name + "</td><td>" + book.genre + "</td><td class='check'>&#10004;</td><td><button class='btn tableBtn' id='" + book.book_id + "' onclick='checkInOut(this.id," + book.out + ")'>Check In</button></td>");
+                            }
+                        } else {
+                            if(book.out === false && book.read === false) {
+                                $("#detailResults").append("<tr><td>" + book.title + "</td><td>" + book.blurb + "</td><td>" + book.name + "</td><td>" + book.genre + "</td><td><button class='btn checkBtn' id='" + book.book_id + "' onclick='markRead(this.id," + book.out + ")'>&#10004;</button></td><td><button class='btn tableBtn' id='" + book.book_id + "' onclick='checkInOut(this.id," + book.out + ")'>Check Out</button></td>");
+                            } else{
+                                $("#detailResults").append("<tr><td>" + book.title + "</td><td>" + book.blurb + "</td><td>" + book.name + "</td><td>" + book.genre + "</td><td><button class='btn checkBtn' id='" + book.book_id + "' onclick='markRead(this.id," + book.out + ")'>&#10004;</button></td><td><button class='btn tableBtn' id='" + book.book_id + "' onclick='checkInOut(this.id," + book.out + ")'>Check In</button></td>");
+                            } 
                         }
                    } else {
                     $("#detailResults").append("<tr><td>" + book.title + "</td><td>" + book.blurb + "</td><td>" + book.name + "</td><td>" + book.genre + "</td><td>N/A</td><td><button class='btn tableBtn' id='" + book.book_id + "' onclick='checkInOut(this.id," + book.out + ")'>Check In</button></td>");
@@ -281,13 +301,16 @@ $(document).ready(function(){
        $.get("/checkInOut", {id:id, out:out}, function(result) { //Do the ajax request then do this when you come back.
 
             $("#checked").empty();
-            getDetails(id);
-
+            
             if (result && result.success) {
                 if(result.out) {
                     $('#checked').append("<p class='success' id='checkedstat'>Book checked out</p>");
+                    getDetails(id);
+                    getCheckedBooks();
                 } else if(!result.out) {
                     $('#checked').append("<p class='success' id='checkedstat'>Book checked in</p>"); 
+                    getDetails(id);
+                    getCheckedBooks();
                 } else {
                     $('#checked').append("<p class='success' id='checkedstat'>Unable to process book</p>");  
                 } 
@@ -326,5 +349,25 @@ $(document).ready(function(){
         }) 
     }
 
+function getCheckedBooks(){
+    $.get("/getCheckedBooks", function(result) { 
+        if (result) {
+        console.log("Back with checked out books: ");
+        console.log(result);
+        $("#checkResults").empty();
+            for (var i = 0; i < result.rows.length; i++) {
+                var book = result.rows[i];
+                $("#checkResults").append("<tr><td>" + book.title + "</td></tr>");
+            }    
+        } else {
+            $("#checkResults").append("<tr><td>Log in to view checked out books</td></tr>");
+            //$("#checked").append("<p class='error'>Must log in before viewing checked out books.</p>");
+        }
 
+}).fail(function(result) {
+    $("#checked").append("<p class='error'>Unable to get checked out books.</p>");
+   
+}) 
+
+}
 

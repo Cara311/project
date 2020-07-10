@@ -20,19 +20,19 @@
           <a href="home.html"><span class="glyphicon glyphicon-home"></span> Home</a>
         </li> -->
         <li>
-          <a onclick="getBooks()"><span class="glyphicon glyphicon-lamp"></span> View Library</a>
+          <button class="btn-sm mainbtn menubtn" onclick="getBooks()"><span class="glyphicon glyphicon-lamp"></span> View Library</button>
+        </li>
+        <!-- <li>
+          <button class="btn-sm mainbtn menubtn"onclick="suggestion()"><span class="glyphicon glyphicon-book"></span> Get Book Suggestion</button>
+        </li>  -->
+        <li>
+          <input type="text" id="title" placeholder="Title"><br><button class="btn-sm mainbtn" onclick="searchByTitle()"><span class="glyphicon glyphicon-search"></span>Search By Title</button>
         </li>
         <li>
-          <a href="#" onclick="suggestion()"><span class="glyphicon glyphicon-book"></span> Get Book Suggestion</a>
-        </li> 
-        <li>
-          <input type="text" id="title" placeholder="Title"><br><button class="btn-sm mainbtn" onclick="searchByTitle()">Search By Title</button>
+          <input type="text" id="author" placeholder="Author"><br><button class="btn-sm mainbtn" onclick="searchByAuthor()"><span class="glyphicon glyphicon-search"></span>Search By Author</button>
         </li>
         <li>
-          <input type="text" id="author" placeholder="Author"><br><button class="btn-sm mainbtn" onclick="searchByAuthor()">Search By Author</button>
-        </li>
-        <li>
-          <input type="text" id="genre" placeholder="Genre"><br><button class="btn-sm mainbtn" onclick="searchByGenre()">Search By Genre</button>
+          <input type="text" id="genre" placeholder="Genre"><br><button class="btn-sm mainbtn" onclick="searchByGenre()"><span class="glyphicon glyphicon-search"></span>Search By Genre</button>
         </li>
         <li>
           <input type="text" id="username" placeholder="username"><br>
@@ -110,6 +110,30 @@
                     </tr>
                   </thead>
                   <tbody id="detailResults">
+                  </tbody>
+                </table>
+          </div>
+      </div>
+      </div>
+      <div class="col-sm-3"></div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-3"></div>
+      <div class="col-sm-6">
+        <div class="card">
+          <div class="card-header">
+              <h2>Books Checked Out</h2>
+              <div id="checked"></div>
+          </div>
+          <div class="card-body">
+              <table class="table" id="checkedTable">
+                  <thead>
+                    <tr>
+                      <th>Title</th>
+                    </tr>
+                  </thead>
+                  <tbody id="checkResults">
                   </tbody>
                 </table>
           </div>

@@ -157,6 +157,17 @@ function getBookByTitle(req,res) {
       });
   }
 
+  function getCheckedBooks(req, res) {
+    var user_id = req.session.userid;
+    console.log("Getting checked out books for: " + user_id);
+
+      librarymodels.getCheckedBooks(user_id, function(error, results) {
+        console.log(results);
+        res.json(results); 
+      });
+
+  }
+
 
 
 
@@ -204,6 +215,7 @@ function getBookByTitle(req,res) {
           request.session.user = request.body.username;
           request.session.userid = id;
           result = {success: true};
+          
         }
         response.json(result); 
       }); 
@@ -276,6 +288,7 @@ function verifySession(request, response, next) {
 
 
   module.exports = {
+    getCheckedBooks: getCheckedBooks,
     markRead: markRead,
     getSessionId: getSessionId,
     verifySession: verifySession,

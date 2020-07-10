@@ -81,6 +81,9 @@ app.get("/markRead", libraryController.verifyLogin, libraryController.markRead);
 //Add author
 app.post("/addauthor", libraryController.verifyLogin, libraryController.addAuthor);
 
+//Get books checked out by user
+app.get("/getCheckedBooks", libraryController.verifyLogin, libraryController.getCheckedBooks);
+
 //Get library page with all books listed
 //app.get('/library', getBooks);
 
