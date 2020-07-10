@@ -145,6 +145,18 @@ function getBookByTitle(req,res) {
   
   }
 
+  //Mark a book as read
+  function markRead(req, res) {
+    var id = req.query.id;
+    var user_id = req.session.userid;
+    console.log("Marking read for: " + user_id);
+
+      librarymodels.markRead(id, user_id, function(error, results) {
+        console.log('Marked as read');
+        res.json({success: true, read:true}); 
+      });
+  }
+
 
 
 
@@ -264,6 +276,7 @@ function verifySession(request, response, next) {
 
 
   module.exports = {
+    markRead: markRead,
     getSessionId: getSessionId,
     verifySession: verifySession,
     checkInOut: checkInOut,

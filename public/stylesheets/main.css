@@ -117,3 +117,21 @@
       background-color: #a71111;
       color: #fff;
     }
+
+    .check {
+      color: rgb(6, 151, 6);
+    }
+
+    #x {
+      color: #a71111;
+    }
+
+    .checkBtn {
+      background-color: rgb(6, 151, 6);
+      color: #fff;
+    }
+
+    .checkBtn:hover {
+      background-color: rgb(7, 185, 7);
+      color: #fff;
+    }

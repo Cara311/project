@@ -14,6 +14,7 @@ function login() {
 			$('#username').val("");
         	$('#password').val("");
 			$("#status").text("Successfully logged in.");
+			getBooks();
 		} else {
 			$("#status").text("Error logging in.");
 		}
@@ -24,6 +25,7 @@ function logout() {
 	$.post("/logout", function(result) {
 		if (result && result.success) {
 			$("#status").text("Successfully logged out.");
+			getBooks();
 		} else {
 			$("#status").text("Error logging out.");
 		}

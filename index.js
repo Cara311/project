@@ -75,6 +75,9 @@ app.get("/remove", libraryController.verifyLogin, libraryController.removeBook);
 //Check books in or out
 app.get("/checkInOut", libraryController.verifyLogin, libraryController.checkInOut);
 
+//Mark book as read
+app.get("/markRead", libraryController.verifyLogin, libraryController.markRead);
+
 //Add author
 app.post("/addauthor", libraryController.verifyLogin, libraryController.addAuthor);
 

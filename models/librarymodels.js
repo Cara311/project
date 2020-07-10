@@ -102,7 +102,8 @@ function getBookByGenre(genre, callback) {
 
 
 function getDetails(id, callback) {
-    const sql = "SELECT * FROM book AS b JOIN book_author AS a ON a.book_id = b.id JOIN authors ON authors.id = a.author_id JOIN status as s ON s.book_id = b.id JOIN book_genre AS bg ON bg.book_id = b.id JOIN genres AS g ON g.id = bg.genre_id AND b.id=$1::int;";
+    const sql="SELECT * FROM book AS b JOIN book_author AS a ON a.book_id = b.id JOIN authors ON authors.id = a.author_id JOIN status as s ON s.book_id = b.id JOIN read ON read.book_id = b.id LEFT JOIN read_status ON read.id = read_status.read_id JOIN book_genre AS bg ON bg.book_id = b.id JOIN genres AS g ON g.id = bg.genre_id AND b.id=$1::int;"
+    //const sql = "SELECT * FROM book AS b JOIN book_author AS a ON a.book_id = b.id JOIN authors ON authors.id = a.author_id JOIN status as s ON s.book_id = b.id JOIN book_genre AS bg ON bg.book_id = b.id JOIN genres AS g ON g.id = bg.genre_id AND b.id=$1::int;";
     var params = [id];
     console.log(params);
     pool.query(sql, params, function(err, result) {
@@ -151,6 +152,22 @@ function checkOut(id, user_id, callback) {
 
 function checkIn(id, user_id, callback) {
   const sql ="WITH first_update AS (UPDATE status SET out = 'false' WHERE book_id=$1::INT RETURNING id) DELETE FROM checked WHERE status_id=(SELECT id FROM first_update) AND user_id=$2::INT;";
+  var params = [id, user_id];
+    console.log(params);
+    pool.query(sql, params, function(err, result) {
+        if (err) {
+          console.log("An error with the database occurred");
+          console.log(err);
+          callback(err, null);
+        } else {
+        console.log(result);    
+        callback(null, result);
+        }
+    }) 
+}
+
+function markRead(id, user_id, callback) {
+  const sql ="WITH first_update AS (UPDATE read SET read = 'true' WHERE book_id=$1::INT RETURNING id) INSERT INTO read_status(read_id, user_id) VALUES((SELECT id FROM first_update), $2::INT);";
   var params = [id, user_id];
     console.log(params);
     pool.query(sql, params, function(err, result) {
@@ -232,6 +249,7 @@ function check(username, callback) {
 
 
 module.exports = {
+    markRead: markRead,
     checkOut: checkOut,
     checkIn: checkIn,
     removeBook: removeBook,
