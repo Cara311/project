@@ -66,6 +66,9 @@ app.get("/genre", libraryController.getBookByGenre);
 //Get genres
 app.get("/genres", libraryController.getGenres);
 
+//Check to see if book has been read
+app.get("/checkRead", libraryController.checkRead);
+
 //Add books
 app.post("/add", libraryController.verifyLogin, libraryController.addBook);
 
@@ -83,6 +86,9 @@ app.post("/addauthor", libraryController.verifyLogin, libraryController.addAutho
 
 //Get books checked out by user
 app.get("/getCheckedBooks", libraryController.verifyLogin, libraryController.getCheckedBooks);
+
+//Get books read by user
+app.get("/getReadBooks", libraryController.verifyLogin, libraryController.getReadBooks);
 
 //Get library page with all books listed
 //app.get('/library', getBooks);

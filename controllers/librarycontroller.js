@@ -16,13 +16,13 @@ function getBooks(req,res) {
 //Get the session id
 function getSessionId(req, res) {
   var user_id = req.session.userid;
-  console.log("Getting session id: " + user_id);
+  //console.log("Getting session id: " + user_id);
   res.json(user_id);
 }  
 
   //Get all the authors
 function getAuthors(req,res) {
-    console.log("Getting Authors"); 
+    //console.log("Getting Authors"); 
 
     librarymodels.getAuthors(function(error, results) {
         if (!error) {
@@ -33,7 +33,7 @@ function getAuthors(req,res) {
 
     //Get all the genres
 function getGenres(req,res) {
-    console.log("Getting Genres"); 
+    //console.log("Getting Genres"); 
 
     librarymodels.getGenres(function(error, results) {
         if (!error) {
@@ -46,7 +46,7 @@ function getGenres(req,res) {
 //Get the book by title
 function getBookByTitle(req,res) {
     var title = req.query.title;
-    console.log("Getting Title: " + title); 
+    //console.log("Getting Title: " + title); 
 
    librarymodels.getBookByTitle(title, function(error, results) {
     if (!error) {
@@ -58,7 +58,7 @@ function getBookByTitle(req,res) {
 
   //Find book by author search
   function getBookByAuthor(req,res) {
-    console.log("Getting books by author"); 
+    //console.log("Getting books by author"); 
     var name = req.query.author;
 
     librarymodels.getBookByAuthor(name, function(error, results) {
@@ -71,7 +71,7 @@ function getBookByTitle(req,res) {
 //Find book by a genre search
   function getBookByGenre(req,res) {
     var genre = req.query.genre;
-    console.log("Getting books by genre");
+    //console.log("Getting books by genre");
    librarymodels.getBookByGenre(genre, function(error, results) {
     if (!error) {
         res.json(results); //This is the callback function
@@ -82,7 +82,7 @@ function getBookByTitle(req,res) {
   //Get Book Details
   function getDetails(req,res) {
     var id = req.query.id;
-    console.log("Getting book details");
+    //console.log("Getting book details");
    librarymodels.getDetails(id, function(error, results) {
     if (!error) {
         res.json(results); //This is the callback function
@@ -96,7 +96,7 @@ function getBookByTitle(req,res) {
     var author = req.body.author;
     var genre = req.body.genre;
    
-    console.log("Adding a new book: " + title);
+    //console.log("Adding a new book: " + title);
    
      librarymodels.insertBook(title, blurb, author, genre, function(results) {
             
@@ -107,7 +107,7 @@ function getBookByTitle(req,res) {
 
   function addAuthor(req, res) {
     var author = req.body.author;
-    console.log("Adding a new author: " + author);
+    //console.log("Adding a new author: " + author);
   
      librarymodels.insertAuthor(author, function(results) {
         result = {success: true};     
@@ -117,7 +117,7 @@ function getBookByTitle(req,res) {
 
   function removeBook(req, res) {
     var id = req.query.id;
-    console.log("Removing Book");
+    //console.log("Removing Book");
    librarymodels.removeBook(id, function(error, results) {
         result = {success: true};     
         res.json(result); 
@@ -129,48 +129,74 @@ function getBookByTitle(req,res) {
     var id = req.query.id;
     var status = req.query.out;
     var user_id = req.session.userid;
-    console.log("Checking Book for: " + user_id);
+    //console.log("Checking Book for: " + user_id);
 
       if(status == 'false') {
       librarymodels.checkOut(id, user_id, function(error, results) {
-        console.log('Checked out');
+        //console.log('Checked out');
         res.json({success: true, out:true}); 
       });
     } else {
       librarymodels.checkIn(id, user_id, function(error, results) {
-        console.log('Checked In');
+        //console.log('Checked In');
         res.json({success: true, out:false}); 
       });
     }  
   
   }
 
+  
   //Mark a book as read
   function markRead(req, res) {
     var id = req.query.id;
     var user_id = req.session.userid;
-    console.log("Marking read for: " + user_id);
+    //console.log("Marking read for: " + user_id);
 
       librarymodels.markRead(id, user_id, function(error, results) {
-        console.log('Marked as read');
+       // console.log('Marked as read');
         res.json({success: true, read:true}); 
       });
   }
 
-  function getCheckedBooks(req, res) {
+  function checkRead(req, res) {
+
     var user_id = req.session.userid;
-    console.log("Getting checked out books for: " + user_id);
+    var book_id = req.query.id;
+    console.log("Checking if book has been read by: " + user_id);
 
-      librarymodels.getCheckedBooks(user_id, function(error, results) {
-        console.log(results);
-        res.json(results); 
+      librarymodels.checkRead(user_id, book_id, function(error, results) {
+        console.log("Back from database with read results" + results);
+        if (!error) {
+          res.json(results);
+        } else {
+          console.log("Error getting read status");
+        }
       });
-
   }
 
 
 
+  function getCheckedBooks(req, res) {
+    var user_id = req.session.userid;
+    //console.log("Getting checked out books for: " + user_id);
 
+      librarymodels.getCheckedBooks(user_id, function(error, results) {
+        //console.log(results);
+        res.json(results); 
+      });
+  }
+
+  function getReadBooks(req, res) {
+    var user_id = req.session.userid;
+    //console.log("Getting read books for: " + user_id);
+
+      librarymodels.getReadBooks(user_id, function(error, results) {
+        //console.log(results);
+        res.json(results); 
+      });
+  }
+
+  
     //Functions For Logging in and Out
 
   function register(req, res) {
@@ -265,6 +291,7 @@ function verifyLogin(request, response, next) {
 	}
 }
 
+
 // This middleware function simply logs the current request to the server
 function logRequest(request, response, next) {
 	console.log("Received a request for: " + request.url);
@@ -288,6 +315,8 @@ function verifySession(request, response, next) {
 
 
   module.exports = {
+    checkRead: checkRead,
+    getReadBooks: getReadBooks,
     getCheckedBooks: getCheckedBooks,
     markRead: markRead,
     getSessionId: getSessionId,

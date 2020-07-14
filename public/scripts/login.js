@@ -1,3 +1,5 @@
+//const { getCheckedBooks } = require("../../models/librarymodels");
+
 function login() {
 	var username = $("#username").val();
 	var password = $("#password").val();
@@ -16,6 +18,7 @@ function login() {
 			$("#status").text("Successfully logged in.");
 			getBooks();
 			getCheckedBooks();
+			getReadBooks();
 		} else {
 			$("#status").text("Error logging in.");
 		}
@@ -26,6 +29,7 @@ function logout() {
 	$.post("/logout", function(result) {
 		if (result && result.success) {
 			$("#checkResults").empty();
+			$("#readResults").empty();
 			$("#status").text("Successfully logged out.");
 			getBooks();
 			

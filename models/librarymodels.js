@@ -5,7 +5,7 @@ const pool = new Pool({connectionString: connectionString, ssl: {rejectUnauthori
 
 //Get a list of all the books
 function getBooks(callback) {
-    const sql = "SELECT a.book_id, title, blurb, name, read, user_id FROM book as b JOIN book_author AS a ON a.book_id = b.id JOIN authors ON authors.id = a.author_id JOIN read ON read.book_id = b.id LEFT JOIN read_status ON read.id = read_status.read_id;";
+    const sql = "SELECT a.book_id, title, name FROM book as b JOIN book_author AS a ON a.book_id = b.id JOIN authors ON authors.id = a.author_id;";
 
     pool.query(sql, function(err, result) {
         if (err) {
@@ -102,7 +102,7 @@ function getBookByGenre(genre, callback) {
 
 
 function getDetails(id, callback) {
-    const sql="SELECT * FROM book AS b JOIN book_author AS a ON a.book_id = b.id JOIN authors ON authors.id = a.author_id JOIN status as s ON s.book_id = b.id JOIN read ON read.book_id = b.id LEFT JOIN read_status ON read.id = read_status.read_id JOIN book_genre AS bg ON bg.book_id = b.id JOIN genres AS g ON g.id = bg.genre_id AND b.id=$1::int;"
+    const sql="SELECT * FROM book AS b JOIN book_author AS a ON a.book_id = b.id JOIN authors ON authors.id = a.author_id JOIN status as s ON s.book_id = b.id JOIN book_genre AS bg ON bg.book_id = b.id JOIN genres AS g ON g.id = bg.genre_id AND b.id=$1::int;"
     //const sql = "SELECT * FROM book AS b JOIN book_author AS a ON a.book_id = b.id JOIN authors ON authors.id = a.author_id JOIN status as s ON s.book_id = b.id JOIN book_genre AS bg ON bg.book_id = b.id JOIN genres AS g ON g.id = bg.genre_id AND b.id=$1::int;";
     var params = [id];
     console.log(params);
@@ -119,7 +119,7 @@ function getDetails(id, callback) {
 }
 
 function removeBook(id, callback) {
-  const sql ="WITH first_delete AS (DELETE FROM book_author WHERE book_id = $1::int), second_delete AS (DELETE FROM book_genre WHERE book_id = $1::int), third_delete AS (DELETE FROM status WHERE book_id = $1::int), fourth_delete AS (DELETE FROM read WHERE book_id = $1::int RETURNING id), fifth_delete AS (DELETE FROM read_status WHERE read_id=(SELECT id FROM fourth_delete) ) DELETE FROM book WHERE id = $1::int;";
+  const sql ="WITH first_delete AS (DELETE FROM book_author WHERE book_id = $1::int), second_delete AS (DELETE FROM book_genre WHERE book_id = $1::int), third_delete AS (DELETE FROM status WHERE book_id = $1::int RETURNING id), next_delete AS(DELETE FROM checked WHERE status_id=(SELECT id FROM third_delete)), fourth_delete AS (DELETE FROM read WHERE book_id = $1::int RETURNING id), fifth_delete AS (DELETE FROM read_status WHERE read_id=(SELECT id FROM fourth_delete) ) DELETE FROM book WHERE id = $1::int;";
   var params = [id];
     console.log(params);
     pool.query(sql, params, function(err, result) {
@@ -260,9 +260,44 @@ function getCheckedBooks(user_id, callback) {
     }) 
 }
 
+function getReadBooks(user_id, callback) {
+  const sql = "SELECT title, read FROM book JOIN read ON read.book_id = book.id JOIN read_status ON read_status.read_id = read.id WHERE user_id=$1::INT;";
+  var params = [user_id];
+
+  pool.query(sql, params, function(err, result) {
+      if (err) {
+        callback(err, null);
+      } else {
+      //console.log(result);    
+      callback(null, result);
+      }
+    }) 
+}
+
+
+function checkRead(user_id, book_id, callback) {
+  const sql = "SELECT read FROM book JOIN read ON read.book_id = book.id JOIN read_status ON read_status.read_id = read.id WHERE read=true AND user_id=$1::INT AND book.id=$2::INT;";
+  var params = [user_id, book_id];
+
+  pool.query(sql, params, function(err, result) {
+    console.log("Here it is: " + result.rowCount);
+      if (err) {
+        callback(err, null);
+      } else if (result.rowCount > 0) {   
+        var read = true;
+        callback(null, read);
+      } else {
+        var read = false;
+        callback(null, read);
+      }
+    }) 
+}
+
 
 
 module.exports = {
+  checkRead: checkRead,
+  getReadBooks: getReadBooks,
     getCheckedBooks: getCheckedBooks,
     markRead: markRead,
     checkOut: checkOut,

@@ -60,8 +60,8 @@
 
 
     <div class="row">
-      <div class="col-sm-2"></div>
-      <div class="col-sm-8">
+    
+      <div class="col-sm-6">
         <div class="card">
           <div class="card-header">
               <h2>Your Library</h2>
@@ -74,7 +74,6 @@
                     <tr>
                       <th>Title</th>
                       <th>Author</th>
-                      <th>Read</th>
                       <th>Details</th>
                       <th>Remove</th>
                     </tr>
@@ -84,13 +83,53 @@
                 </table>
           </div>
       </div>
+     
       </div>
+
+      <div class="col-sm-3">
+        <div class="card">
+          <div class="card-header">
+              <h2>Books Checked Out</h2>
+              <div id="checked"></div>
+          </div>
+          <div class="card-body">
+              <table class="table" id="checkedTable">
+                  <thead>
+                    <tr>
+                      <th>Title</th>
+                    </tr>
+                  </thead>
+                  <tbody id="checkResults">
+                  </tbody>
+                </table>
+          </div>
+          </div>
       </div>
-      <div class="col-sm-2"></div>
+
+      <div class="col-sm-3">
+        <div class="card">
+          <div class="card-header">
+              <h2>Books Read</h2>
+              <div id="read"></div>
+          </div>
+          <div class="card-body">
+              <table class="table" id="readTable">
+                  <thead>
+                    <tr>
+                      <th>Title</th>
+                    </tr>
+                  </thead>
+                  <tbody id="readResults">
+                  </tbody>
+                </table>
+          </div>
+          </div>
+
+      </div>
     </div>
 
+
     <div class="row">
-      <div class="col-sm-3"></div>
       <div class="col-sm-6">
         <div class="card">
           <div class="card-header">
@@ -115,76 +154,53 @@
           </div>
       </div>
       </div>
-      <div class="col-sm-3"></div>
+      
     </div>
 
     <div class="row">
-      <div class="col-sm-3"></div>
-      <div class="col-sm-6">
+      <div class="col-sm-3">
         <div class="card">
           <div class="card-header">
-              <h2>Books Checked Out</h2>
-              <div id="checked"></div>
+            <div class="success"></div>
+              <h2>Add Book</h2>
           </div>
           <div class="card-body">
-              <table class="table" id="checkedTable">
-                  <thead>
-                    <tr>
-                      <th>Title</th>
-                    </tr>
-                  </thead>
-                  <tbody id="checkResults">
-                  </tbody>
-                </table>
+            <!-- <form class="form-inline" id="bookForm"> -->
+             <!--  <label for="uid">Your User Id:</label>
+              <input type="number" class="form-control" placeholder="Enter User Id" id="uid"> -->
+              <label for="btitle">Book Title:</label>
+              <input type="text" class="form-control" placeholder="Enter title" id="btitle">
+              <label for="bblurb">Blurb:</label>
+              <input type="text" class="form-control" placeholder="Enter blurb" id="bblurb"><br>
+              <label for="bauthor">Author:</label>
+              <select name="bauthor" id="bauthor">
+              </select><br><br>
+              <label for="bgenre">Genre:</label>
+              <select name="bgenre" id="bgenre">
+              </select><br><br>
+            
+              <button class="btn-lg mainbtn" onclick="addBook()">Add Book</button>
+            <!-- </form>   -->
           </div>
+        </div>
       </div>
+      <div class="col-sm-3">
+        <div class="card">
+          <div class="card-header">
+              <h2>Add Author</h2>
+              <label for="btitle">Author Name:</label>
+              <input type="text" class="form-control" placeholder="Enter Name" id="aname"><br><br>
+              <button class="btn-lg mainbtn" onclick="addAuthor()">Add Author</button>
+          </div>
+          <div class="card-body">
+          </div>
+        </div>
       </div>
-      <div class="col-sm-3"></div>
+      <div class="col-sm-6"></div>
+
     </div>
 
-      <div class="row">
-        <div class="col-sm-3"></div>
-        <div class="col-sm-3">
-          <div class="card">
-            <div class="card-header">
-              <div class="success"></div>
-                <h2>Add Book</h2>
-            </div>
-            <div class="card-body">
-              <!-- <form class="form-inline" id="bookForm"> -->
-               <!--  <label for="uid">Your User Id:</label>
-                <input type="number" class="form-control" placeholder="Enter User Id" id="uid"> -->
-                <label for="btitle">Book Title:</label>
-                <input type="text" class="form-control" placeholder="Enter title" id="btitle">
-                <label for="bblurb">Blurb:</label>
-                <input type="text" class="form-control" placeholder="Enter blurb" id="bblurb"><br>
-                <label for="bauthor">Author:</label>
-                <select name="bauthor" id="bauthor">
-                </select><br><br>
-                <label for="bgenre">Genre:</label>
-                <select name="bgenre" id="bgenre">
-                </select><br><br>
-              
-                <button class="btn-lg mainbtn" onclick="addBook()">Add Book</button>
-              <!-- </form>   -->
-            </div>
-        </div>
-        </div>
-        <div class="col-sm-3">
-          <div class="card">
-            <div class="card-header">
-                <h2>Add Author</h2>
-                <label for="btitle">Author Name:</label>
-                <input type="text" class="form-control" placeholder="Enter Name" id="aname"><br><br>
-                <button class="btn-lg mainbtn" onclick="addAuthor()">Add Author</button>
-            </div>
-            <div class="card-body">
-            </div>
-        </div>
-      </div>
-      <div class="col-sm-3"></div>
-
-  </div>
+     
 </div>
 
   
