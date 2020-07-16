@@ -53,11 +53,11 @@ function getGenres(callback) {
 function getBookByTitle(title, callback) {
     const sql = "SELECT book_id, title, blurb, name FROM book as b JOIN book_author AS a ON a.book_id = b.id JOIN authors ON authors.id = a.author_id AND b.title=$1::text";
     var params = [title];
-    console.log(params);
+    //console.log(params);
     pool.query(sql, params, function(err, result) {
         if (err) {
-          console.log("An error with the database occurred");
-          console.log(err);
+          //console.log("An error with the database occurred");
+          //console.log(err);
           callback(err, null);
         } else {
         //console.log(result);    
@@ -69,15 +69,15 @@ function getBookByTitle(title, callback) {
 function getBookByAuthor(name, callback) {
     const sql = "SELECT book_id, title, blurb, name FROM book as b JOIN book_author AS a ON a.book_id = b.id JOIN authors ON authors.id = a.author_id AND authors.name=$1::text";
     var params = [name];
-    console.log(params);
-    console.log(params);
+    //console.log(params);
+    //console.log(params);
     pool.query(sql, params, function(err, result) {
         if (err) {
-          console.log("An error with the database occurred");
-          console.log(err);
+          //console.log("An error with the database occurred");
+          //console.log(err);
           callback(err, null);
         } else {
-        console.log(result);    
+        //console.log(result);    
         callback(null, result.rows);
         }
     }) 
@@ -86,15 +86,15 @@ function getBookByAuthor(name, callback) {
 function getBookByGenre(genre, callback) {
     const sql = "SELECT * FROM book AS b JOIN book_author AS a ON a.book_id = b.id JOIN authors ON authors.id = a.author_id JOIN book_genre AS bg ON bg.book_id = b.id JOIN genres AS g ON g.id = bg.genre_id AND g.genre=$1::text";
     var params = [genre];
-    console.log(params);
-    console.log(params);
+    //console.log(params);
+    //console.log(params);
     pool.query(sql, params, function(err, result) {
         if (err) {
-          console.log("An error with the database occurred");
-          console.log(err);
+          //console.log("An error with the database occurred");
+          //console.log(err);
           callback(err, null);
         } else {
-        console.log(result);    
+        //console.log(result);    
         callback(null, result.rows);
         }
     }) 
@@ -105,14 +105,14 @@ function getDetails(id, callback) {
     const sql="SELECT * FROM book AS b JOIN book_author AS a ON a.book_id = b.id JOIN authors ON authors.id = a.author_id JOIN status as s ON s.book_id = b.id JOIN book_genre AS bg ON bg.book_id = b.id JOIN genres AS g ON g.id = bg.genre_id AND b.id=$1::int;"
     //const sql = "SELECT * FROM book AS b JOIN book_author AS a ON a.book_id = b.id JOIN authors ON authors.id = a.author_id JOIN status as s ON s.book_id = b.id JOIN book_genre AS bg ON bg.book_id = b.id JOIN genres AS g ON g.id = bg.genre_id AND b.id=$1::int;";
     var params = [id];
-    console.log(params);
+    //console.log(params);
     pool.query(sql, params, function(err, result) {
         if (err) {
-          console.log("An error with the database occurred");
-          console.log(err);
+          //console.log("An error with the database occurred");
+          //console.log(err);
           callback(err, null);
         } else {
-        console.log(result);    
+        //console.log(result);    
         callback(null, result.rows);
         }
     }) 
@@ -121,14 +121,14 @@ function getDetails(id, callback) {
 function removeBook(id, callback) {
   const sql ="WITH first_delete AS (DELETE FROM book_author WHERE book_id = $1::int), second_delete AS (DELETE FROM book_genre WHERE book_id = $1::int), third_delete AS (DELETE FROM status WHERE book_id = $1::int RETURNING id), next_delete AS(DELETE FROM checked WHERE status_id=(SELECT id FROM third_delete)), fourth_delete AS (DELETE FROM read WHERE book_id = $1::int RETURNING id), fifth_delete AS (DELETE FROM read_status WHERE read_id=(SELECT id FROM fourth_delete) ) DELETE FROM book WHERE id = $1::int;";
   var params = [id];
-    console.log(params);
+    //console.log(params);
     pool.query(sql, params, function(err, result) {
         if (err) {
-          console.log("An error with the database occurred");
-          console.log(err);
+          //console.log("An error with the database occurred");
+          //console.log(err);
           callback(err, null);
         } else {
-        console.log(result);    
+        //console.log(result);    
         callback(null, result);
         }
     }) 
@@ -137,14 +137,14 @@ function removeBook(id, callback) {
 function checkOut(id, user_id, callback) {
   const sql ="WITH first_update AS (UPDATE status SET out = 'true' WHERE book_id=$1::INT RETURNING id) INSERT INTO checked(status_id, user_id) VALUES((SELECT id FROM first_update), $2::INT);";
   var params = [id, user_id];
-    console.log(params);
+    //console.log(params);
     pool.query(sql, params, function(err, result) {
         if (err) {
-          console.log("An error with the database occurred");
-          console.log(err);
+          //console.log("An error with the database occurred");
+          //console.log(err);
           callback(err, null);
         } else {
-        console.log(result);    
+        //console.log(result);    
         callback(null, result);
         }
     }) 
@@ -153,14 +153,14 @@ function checkOut(id, user_id, callback) {
 function checkIn(id, user_id, callback) {
   const sql ="WITH first_update AS (UPDATE status SET out = 'false' WHERE book_id=$1::INT RETURNING id) DELETE FROM checked WHERE status_id=(SELECT id FROM first_update) AND user_id=$2::INT;";
   var params = [id, user_id];
-    console.log(params);
+    //console.log(params);
     pool.query(sql, params, function(err, result) {
         if (err) {
-          console.log("An error with the database occurred");
-          console.log(err);
+          //console.log("An error with the database occurred");
+         // console.log(err);
           callback(err, null);
         } else {
-        console.log(result);    
+        //console.log(result);    
         callback(null, result);
         }
     }) 
@@ -169,14 +169,14 @@ function checkIn(id, user_id, callback) {
 function markRead(id, user_id, callback) {
   const sql ="WITH first_update AS (UPDATE read SET read = 'true' WHERE book_id=$1::INT RETURNING id) INSERT INTO read_status(read_id, user_id) VALUES((SELECT id FROM first_update), $2::INT);";
   var params = [id, user_id];
-    console.log(params);
+    //console.log(params);
     pool.query(sql, params, function(err, result) {
         if (err) {
-          console.log("An error with the database occurred");
-          console.log(err);
+          //console.log("An error with the database occurred");
+          //console.log(err);
           callback(err, null);
         } else {
-        console.log(result);    
+        //console.log(result);    
         callback(null, result);
         }
     }) 
@@ -189,12 +189,12 @@ function insertBook(title, blurb, author, genre, callback) {
     console.log(params);
     pool.query(sql, params, function(err, result) {
         if (err) {
-          console.log("An error with the database occurred");
-          console.log(err);
+          //console.log("An error with the database occurred");
+          //console.log(err);
           callback(err, null);
         } else {
          var success = true;   
-        console.log(result);    
+        //console.log(result);    
         callback(null, success);
         }
     }) 
@@ -206,8 +206,8 @@ function insertAuthor(author, callback) {
     console.log(params);
     pool.query(sql, params, function(err, result) {
         if (err) {
-          console.log("An error with the database occurred");
-          console.log(err);
+          //console.log("An error with the database occurred");
+          //console.log(err);
           callback(err, null);
         } else {  
         var success = true;
@@ -222,8 +222,8 @@ function insertUser(username, hash, callback) {
   //console.log(params);
   pool.query(sql, params, function(err, result) {
       if (err) {
-        console.log("An error with the database occurred");
-        console.log(err);
+        //console.log("An error with the database occurred");
+        //console.log(err);
         callback(err, null);
       } else {  
       var success = true;
@@ -293,9 +293,23 @@ function checkRead(user_id, book_id, callback) {
     }) 
 }
 
+function checkUser(id, callback) {
+  const sql ="SELECT user_id FROM checked JOIN status ON status.id = checked.status_id WHERE book_id=$1::INT;";
+  var params = [id];
+    //console.log(params);
+    pool.query(sql, params, function(err, result) {
+      if (err) {
+        callback(err, null);
+      } else{
+        callback(null, result);
+      } 
+    }) 
+}
+
 
 
 module.exports = {
+  checkUser: checkUser,
   checkRead: checkRead,
   getReadBooks: getReadBooks,
     getCheckedBooks: getCheckedBooks,

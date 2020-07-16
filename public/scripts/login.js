@@ -61,7 +61,7 @@ function register() {
     };
 
 	$.post("/register", params, function(result) {
-        console.log(result);
+        //console.log(result);
 		if (result) {
 			$("#status").text("Successfully registered.");
 		} else {

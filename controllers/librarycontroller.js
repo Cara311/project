@@ -196,6 +196,14 @@ function getBookByTitle(req,res) {
       });
   }
 
+  function checkUser(req, res) {
+    var id = req.query.id;
+    librarymodels.checkUser(id, function(error, result) {
+        //console.log('The checked user result from database is: ' + result);
+        res.json(result); 
+    });
+  }
+
   
     //Functions For Logging in and Out
 
@@ -220,12 +228,12 @@ function getBookByTitle(req,res) {
     if(username) {
       librarymodels.check(username, function(error, results) {
         //res.json(results); 
-        console.log(results);
+        //console.log(results);
   
         //Get the results from database and test hash
         for (var i = 0; i < results.rows.length; i++) {
           var info = results.rows[i];
-          console.log(info);
+          //console.log(info);
         }
 
         var id = info.id;
@@ -314,7 +322,10 @@ function verifySession(request, response, next) {
 
 
 
+
+
   module.exports = {
+    checkUser: checkUser,
     checkRead: checkRead,
     getReadBooks: getReadBooks,
     getCheckedBooks: getCheckedBooks,

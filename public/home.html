@@ -90,7 +90,7 @@
         <div class="card">
           <div class="card-header">
               <h2>Books Checked Out</h2>
-              <div id="checked"></div>
+              <div id="checkedBooks"></div>
           </div>
           <div class="card-body">
               <table class="table" id="checkedTable">
@@ -130,7 +130,8 @@
 
 
     <div class="row">
-      <div class="col-sm-6">
+      <div class="col-sm-1"></div>
+      <div class="col-sm-10">
         <div class="card">
           <div class="card-header">
               <h2>Book Details</h2>
@@ -153,6 +154,7 @@
                 </table>
           </div>
       </div>
+      <div class="col-sm-1"></div>
       </div>
       
     </div>
@@ -161,8 +163,8 @@
       <div class="col-sm-3">
         <div class="card">
           <div class="card-header">
-            <div class="success"></div>
               <h2>Add Book</h2>
+              <div id="addBook"></div>
           </div>
           <div class="card-body">
             <!-- <form class="form-inline" id="bookForm"> -->
@@ -188,6 +190,7 @@
         <div class="card">
           <div class="card-header">
               <h2>Add Author</h2>
+              <div id="addAuthor"></div>
               <label for="btitle">Author Name:</label>
               <input type="text" class="form-control" placeholder="Enter Name" id="aname"><br><br>
               <button class="btn-lg mainbtn" onclick="addAuthor()">Add Author</button>

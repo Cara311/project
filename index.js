@@ -69,6 +69,9 @@ app.get("/genres", libraryController.getGenres);
 //Check to see if book has been read
 app.get("/checkRead", libraryController.checkRead);
 
+//Check to see what user has book checked out
+app.get("/checkUser", libraryController.checkUser);
+
 //Add books
 app.post("/add", libraryController.verifyLogin, libraryController.addBook);
 
