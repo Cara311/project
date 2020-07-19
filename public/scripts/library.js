@@ -451,3 +451,21 @@ function checkSearchInput(input) {
        return input;
    }  
 }
+
+function suggestion() {
+    $.get("/suggestion", function(results) { 
+        if (result) {
+            //console.log("Back with checked out books: ");
+            //console.log(result);
+            $("#checkResults").empty();
+                for (var i = 0; i < result.rows.length; i++) {
+                    var book = result.rows[i];
+                    $("#checkResults").append("<tr><td>" + book.title + "</td></tr>");
+                }    
+            } else {
+                $("#status").append("<tr><td>Log in to view checked out books</td></tr>");
+            }
+
+    })
+
+}

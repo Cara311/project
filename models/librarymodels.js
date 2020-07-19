@@ -19,6 +19,22 @@ function getBooks(callback) {
       })     
 }
 
+function getSuggestion(callback) {
+  const sql = "SELECT a.book_id, title, name FROM book as b JOIN book_author AS a ON a.book_id = b.id JOIN authors ON authors.id = a.author_id;";
+  var user_id = req.session.userid;
+  var params = [user_id];
+    pool.query(sql, params, function(err, result) {
+        if (err) {
+          //console.log("An error with the database occurred");
+          //console.log(err);
+          callback(err, null);
+        } else {
+        //console.log(result);    
+        callback(null, result);
+        }
+      }) 
+}
+
 function getAuthors(callback) {
     const sql = "SELECT id, name FROM authors;";
 
@@ -308,9 +324,10 @@ function checkUser(id, callback) {
 
 
 module.exports = {
-  checkUser: checkUser,
-  checkRead: checkRead,
-  getReadBooks: getReadBooks,
+    getSuggestion: getSuggestion,
+    checkUser: checkUser,
+    checkRead: checkRead,
+    getReadBooks: getReadBooks,
     getCheckedBooks: getCheckedBooks,
     markRead: markRead,
     checkOut: checkOut,

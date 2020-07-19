@@ -96,6 +96,9 @@ app.get("/getCheckedBooks", libraryController.verifyLogin, libraryController.get
 //Get books read by user
 app.get("/getReadBooks", libraryController.verifyLogin, libraryController.getReadBooks);
 
+//Get a book suggestion
+app.get("/suggestion", libraryController.verifyLogin, libraryController.getSuggestion);
+
 //Get library page with all books listed
 //app.get('/library', getBooks);
 

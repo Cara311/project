@@ -14,6 +14,16 @@ function getBooks(req,res) {
     }) 
   }
 
+  function getSuggestion(req, res) {
+    librarymodels.getSuggestion(function(error, results) {
+      if (!error) {
+        res.json(results);
+      } else {
+        results = {error: true};
+      }
+    })
+  }
+
 //Get the session id
 function getSessionId(req, res) {
   var user_id = req.session.userid;
@@ -366,6 +376,7 @@ function checkAuthor(req, res, next) {
 
 
   module.exports = {
+    getSuggestion: getSuggestion,
     verifyAdmin: verifyAdmin,
     checkUser: checkUser,
     checkRead: checkRead,
