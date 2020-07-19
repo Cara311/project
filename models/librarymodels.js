@@ -59,26 +59,27 @@ function getBookByTitle(title, callback) {
           //console.log("An error with the database occurred");
           //console.log(err);
           callback(err, null);
-        } else {
-        //console.log(result);    
+        } else if (result.rowCount > 0) {
+        console.log(result);    
         callback(null, result.rows);
+        } else {
+          callback(err, null);
         }
     })  
 }
 
-function getBookByAuthor(name, callback) {
+function getBookByAuthor(author, callback) {
     const sql = "SELECT book_id, title, blurb, name FROM book as b JOIN book_author AS a ON a.book_id = b.id JOIN authors ON authors.id = a.author_id AND authors.name=$1::text";
-    var params = [name];
+    var params = [author]; 
     //console.log(params);
     //console.log(params);
     pool.query(sql, params, function(err, result) {
-        if (err) {
-          //console.log("An error with the database occurred");
-          //console.log(err);
-          callback(err, null);
+      console.log(result);
+        if (result.rowCount > 0) {
+          callback(null, result.rows);
         } else {
         //console.log(result);    
-        callback(null, result.rows);
+        callback(err, null);
         }
     }) 
 }
@@ -89,13 +90,11 @@ function getBookByGenre(genre, callback) {
     //console.log(params);
     //console.log(params);
     pool.query(sql, params, function(err, result) {
-        if (err) {
-          //console.log("An error with the database occurred");
-          //console.log(err);
-          callback(err, null);
+        if (result.rowCount > 0) {
+          callback(null, result.rows);
         } else {
-        //console.log(result);    
-        callback(null, result.rows);
+          callback(err, null);    
+        
         }
     }) 
 }
@@ -280,7 +279,7 @@ function checkRead(user_id, book_id, callback) {
   var params = [user_id, book_id];
 
   pool.query(sql, params, function(err, result) {
-    console.log("Here it is: " + result.rowCount);
+    //console.log("Here it is: " + result.rowCount);
       if (err) {
         callback(err, null);
       } else if (result.rowCount > 0) {   

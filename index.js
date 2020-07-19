@@ -2,6 +2,8 @@ require('dotenv').config();
 const path = require('path');
 const express = require('express');
 const session = require("express-session");
+
+
 //const bcrypt = require('bcrypt');
 const app = express();
 const port = process.env.PORT || 3000;
@@ -19,6 +21,7 @@ app.use(express.static(__dirname + '/public'));
 app.use(express.json()); //Support json encoded body
 app.use(express.urlencoded({extended: true})); //Support url encoded body
 //var session = require('express-session'); //Use sessions
+//app.use(expressValidator());
 
 //Set Up Sessions
 app.use(session({
@@ -73,10 +76,10 @@ app.get("/checkRead", libraryController.checkRead);
 app.get("/checkUser", libraryController.checkUser);
 
 //Add books
-app.post("/add", libraryController.verifyLogin, libraryController.addBook);
+app.post("/add", libraryController.verifyLogin, libraryController.verifyAdmin, libraryController.addBook);
 
 //Remove Books
-app.get("/remove", libraryController.verifyLogin, libraryController.removeBook);
+app.get("/remove", libraryController.verifyLogin, libraryController.verifyAdmin, libraryController.removeBook);
 
 //Check books in or out
 app.get("/checkInOut", libraryController.verifyLogin, libraryController.checkInOut);
@@ -85,7 +88,7 @@ app.get("/checkInOut", libraryController.verifyLogin, libraryController.checkInO
 app.get("/markRead", libraryController.verifyLogin, libraryController.markRead);
 
 //Add author
-app.post("/addauthor", libraryController.verifyLogin, libraryController.addAuthor);
+app.post("/addauthor", libraryController.verifyLogin, libraryController.verifyAdmin, libraryController.addAuthor);
 
 //Get books checked out by user
 app.get("/getCheckedBooks", libraryController.verifyLogin, libraryController.getCheckedBooks);

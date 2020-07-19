@@ -18,7 +18,7 @@
       }
 
       h2 {
-        font-family: 'Merriweather', serif;
+        font-family: 'Special Elite', cursive;
         color: #D4AF37;
         font-size: 25px;
         text-shadow: 2px 2px 2px #000;
@@ -69,7 +69,7 @@
     }
     .success {
       color: rgb(6, 151, 6);
-      font-size: 20px;
+      font-size: 16px;
     }
 
     #message {
@@ -95,6 +95,7 @@
     }
 
     input {
+      margin-top: 10px;
       margin-right: 10px;
     }
 

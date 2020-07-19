@@ -1,6 +1,7 @@
 const librarymodels = require("../models/librarymodels.js");
 const bcrypt = require('bcrypt');
 
+
 //Get all the books
 function getBooks(req,res) {
     console.log("Getting Books"); 
@@ -46,11 +47,15 @@ function getGenres(req,res) {
 //Get the book by title
 function getBookByTitle(req,res) {
     var title = req.query.title;
-    //console.log("Getting Title: " + title); 
+    console.log("Getting Title: " + title); 
 
    librarymodels.getBookByTitle(title, function(error, results) {
+     console.log(results);
     if (!error) {
         res.json(results); //This is the callback function
+    } else {
+        results = {error: true};
+        res.json(results);
     }
         
    });
@@ -64,6 +69,9 @@ function getBookByTitle(req,res) {
     librarymodels.getBookByAuthor(name, function(error, results) {
         if (!error) {
             res.json(results); //This is the callback function
+        } else {
+          results = {error: true};
+          res.json(results);
         }
             
        });
@@ -71,10 +79,14 @@ function getBookByTitle(req,res) {
 //Find book by a genre search
   function getBookByGenre(req,res) {
     var genre = req.query.genre;
-    //console.log("Getting books by genre");
+    //console.log("Getting books by genre: " + genre);
    librarymodels.getBookByGenre(genre, function(error, results) {
+     console.log(results);
     if (!error) {
         res.json(results); //This is the callback function
+    } else {
+      results = {error: true};
+      res.json(results);
     }
    }); 
   }
@@ -82,7 +94,7 @@ function getBookByTitle(req,res) {
   //Get Book Details
   function getDetails(req,res) {
     var id = req.query.id;
-    //console.log("Getting book details");
+    //console.log("Getting book details" + id);
    librarymodels.getDetails(id, function(error, results) {
     if (!error) {
         res.json(results); //This is the callback function
@@ -97,15 +109,14 @@ function getBookByTitle(req,res) {
     var genre = req.body.genre;
    
     //console.log("Adding a new book: " + title);
-   
-     librarymodels.insertBook(title, blurb, author, genre, function(results) {
-            
+     librarymodels.insertBook(title, blurb, author, genre, function(results) {  
             result = {success: true}; 
             res.json(result); 
     }); 
   }
 
   function addAuthor(req, res) {
+
     var author = req.body.author;
     //console.log("Adding a new author: " + author);
   
@@ -162,10 +173,10 @@ function getBookByTitle(req,res) {
 
     var user_id = req.session.userid;
     var book_id = req.query.id;
-    console.log("Checking if book has been read by: " + user_id);
+    //console.log("Checking if book has been read by: " + user_id);
 
       librarymodels.checkRead(user_id, book_id, function(error, results) {
-        console.log("Back from database with read results" + results);
+        //console.log("Back from database with read results" + results);
         if (!error) {
           res.json(results);
         } else {
@@ -224,47 +235,43 @@ function getBookByTitle(req,res) {
 
   function handleLogin(request, response) {
     var username = request.body.username;
-
-    if(username) {
+ 
       librarymodels.check(username, function(error, results) {
         //res.json(results); 
-        //console.log(results);
-  
-        //Get the results from database and test hash
-        for (var i = 0; i < results.rows.length; i++) {
-          var info = results.rows[i];
-          //console.log(info);
-        }
-
-        var id = info.id;
-        var user = info.username;
-        var hash = info.password;
-        var id = info.id;
-        var password = request.body.password;
-        var test = bcrypt.compareSync(password, hash);
-        
-        var result = {success: false};
-        // We should do better error checking here to make sure the parameters are present
-        if (request.body.username == user && test == true) {
-          request.session.user = request.body.username;
-          request.session.userid = id;
-          result = {success: true};
+        console.log(results);
+        if(results.rowCount > 0) {
+          //Get the results from database and test hash
+          for (var i = 0; i < results.rows.length; i++) {
+            var info = results.rows[i];
+            console.log(info);
+          } 
+          //var id = info.id;
+          var user = info.username;
+          var hash = info.password;
+          var id = info.id;
+          var password = request.body.password;
+          var test = bcrypt.compareSync(password, hash);
           
+          var result = {success: false};
+  
+          if (request.body.username == user && test == true) {
+            request.session.user = request.body.username;
+            request.session.userid = id;
+            result = {success: true};
+          }
+          response.json(result); 
+        } else {
+          var result = {error: true};
+          response.json(result); 
         }
-        response.json(result); 
-      }); 
-    } else {
-      result = 0;
-      response.json(result);
-    }
-      
+        
+      });   
   }
 
   // If a user is currently stored on the session, removes it
 function handleLogout(request, response) {
 	var result = {success: false};
 
-	// We should do better error checking here to make sure the parameters are present
 	if (request.session.user) {
 		request.session.destroy();
 		result = {success: true};
@@ -319,12 +326,47 @@ function verifySession(request, response, next) {
 	}
 }
 
+function verifyAdmin(req, res, next) {
+  if (req.session.userid == 1) {
+    next();
+  } else {
+    var result = {success: false};
+    res.json(result);
 
+  }
+}
 
+/* 
+
+const { body } = require('express-validator');
+
+function validate(req, res, next) {
+     next([body('author', 'must be alphabet characters').isAlpha,
+    ]);        
+} */
+/* 
+const { check, validationResult } = require('express-validator');
+
+function checkAuthor(req, res, next) {
+  var checking = [check('author').exists().isLength({min: 5}).escape().withMessage('Name must have more than 5 characters')];
+   try {
+     console.log("At Check");
+      const errors = validationResult(checking); 
+      console.log(errors);
+      if (!errors.isEmpty()) {
+        res.status(422).json({ errors: errors.array() });
+        return;
+      }
+     next();
+   } catch(err) {
+     return next(err)
+   }
+}  */
 
 
 
   module.exports = {
+    verifyAdmin: verifyAdmin,
     checkUser: checkUser,
     checkRead: checkRead,
     getReadBooks: getReadBooks,

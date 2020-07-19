@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>My Home Library</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <script src="scripts/library.js"></script>
@@ -22,9 +23,9 @@
         <li>
           <button class="btn-sm mainbtn menubtn" onclick="getBooks()"><span class="glyphicon glyphicon-lamp"></span> View Library</button>
         </li>
-        <!-- <li>
+        <li>
           <button class="btn-sm mainbtn menubtn"onclick="suggestion()"><span class="glyphicon glyphicon-book"></span> Get Book Suggestion</button>
-        </li>  -->
+        </li>  
         <li>
           <input type="text" id="title" placeholder="Title"><br><button class="btn-sm mainbtn" onclick="searchByTitle()"><span class="glyphicon glyphicon-search"></span>Search By Title</button>
         </li>
@@ -37,13 +38,9 @@
         <li>
           <input type="text" id="username" placeholder="username"><br>
           <input type="password" id="password" placeholder="password"><br>
-          <button class="btn-sm mainbtn" onclick="login();">Log in</button>
-          <button class="btn-sm mainbtn" onclick="logout();">Log out</button><br>
+          <button class="btn-sm mainbtn" onclick="login();" id='login'>Log in</button>
+          <button class="btn-sm mainbtn" onclick="logout();" id='logout'>Log out</button><br>
         </li>
-        <li>
-          <div id="status"></div>
-        </li>
-
       </ul>
     </div>
   </nav>
@@ -53,6 +50,7 @@
 
   <div class="container py-5">
     <header class="text-center text-white py-5">
+      <div id="status"></div>
       <h1 class="display-4 font-weight-bold mb-4">My Home Library</h1>
       <p class="lead mb-0" id="sub">Discover What's in Your Library</p>
     </header>
@@ -82,10 +80,9 @@
                   </tbody>
                 </table>
           </div>
+        </div>
       </div>
-     
-      </div>
-
+      
       <div class="col-sm-3">
         <div class="card">
           <div class="card-header">
@@ -103,9 +100,9 @@
                   </tbody>
                 </table>
           </div>
-          </div>
-      </div>
-
+        </div>
+      </div>  
+      
       <div class="col-sm-3">
         <div class="card">
           <div class="card-header">
@@ -122,9 +119,8 @@
                   <tbody id="readResults">
                   </tbody>
                 </table>
-          </div>
-          </div>
-
+            </div>
+        </div>
       </div>
     </div>
 
@@ -171,14 +167,14 @@
              <!--  <label for="uid">Your User Id:</label>
               <input type="number" class="form-control" placeholder="Enter User Id" id="uid"> -->
               <label for="btitle">Book Title:</label>
-              <input type="text" class="form-control" placeholder="Enter title" id="btitle">
+              <input type="text" class="form-control" placeholder="Enter title" id="btitle" required>
               <label for="bblurb">Blurb:</label>
-              <input type="text" class="form-control" placeholder="Enter blurb" id="bblurb"><br>
+              <input type="text" class="form-control" placeholder="Enter blurb" id="bblurb" required><br>
               <label for="bauthor">Author:</label>
-              <select name="bauthor" id="bauthor">
+              <select name="bauthor" id="bauthor" required>
               </select><br><br>
               <label for="bgenre">Genre:</label>
-              <select name="bgenre" id="bgenre">
+              <select name="bgenre" id="bgenre" required>
               </select><br><br>
             
               <button class="btn-lg mainbtn" onclick="addBook()">Add Book</button>
@@ -192,7 +188,7 @@
               <h2>Add Author</h2>
               <div id="addAuthor"></div>
               <label for="btitle">Author Name:</label>
-              <input type="text" class="form-control" placeholder="Enter Name" id="aname"><br><br>
+              <input type="text" class="form-control" placeholder="Enter Name" id="aname" required><br><br>
               <button class="btn-lg mainbtn" onclick="addAuthor()">Add Author</button>
           </div>
           <div class="card-body">

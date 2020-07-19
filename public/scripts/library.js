@@ -1,5 +1,7 @@
 //const session = require("express-session");
 
+
+
 $(document).ready(function(){
         $('#btitle').val("");
         $('#bblurb').val("");
@@ -9,6 +11,9 @@ $(document).ready(function(){
         $('#author').val("");
         $('#genre').val("");
         $('#uid').val("");
+        $("#logout").hide();
+        getBooks();
+
 
    
     $.get("/authors", function(data) { 
@@ -49,7 +54,7 @@ $(document).ready(function(){
   });
 
     function getBooks() {
-        console.log("Searching for books...");
+        //console.log("Searching for books...");
         $("#error").empty();
         $('.success').empty();
         $("#detailResults").empty();
@@ -79,101 +84,81 @@ $(document).ready(function(){
 
     function searchByTitle() {
         //console.log("Searching by title...");
-        var title = $("#title").val();
+        var checkTitle = $("#title").val();
+        var title = checkSearchInput(checkTitle);
         //console.log(title);
-        $.get("/title", {title:title}, function(data) { //Do the ajax request then do this when you come back.
-            //console.log("Back with: ");
-            //console.log(data);
-            $.get("/session_id", function(user) {
-                var user_id = user;
-                $("#error").empty();
-            if(data < 1) {
-                $('#error').append("<p class='error'>Unable to find title</p>")
-            } else {
+        $.get("/title", {title:title}, function(results) { //Do the ajax request then do this when you come back.
+            console.log("Back with: ");
+            console.log(results);
+            $("#status").empty();
+            if(results != null){
                 $("#tableResults").empty();
                 $("#detailResults").empty();
                 $('#title').val("");
-                for (var i = 0; i < data.length; i++) {
-                   
-                    var book = data[i];
-                    //console.log(book);
-                    if(book.user_id != undefined && user_id > 0) {
-                        $("#tableResults").append("<tr id='bookRow'><td>" + book.title + "</td><td>" + book.name + "</td><td class='check'> &#10004; </td><td><button class='btn tableBtn' id='" + book.book_id + "'onclick='getDetails(this.id)'>Get Details</button></td><td><button class='btn removeBtn' id='" + book.book_id + "'onclick='removeBook(this.id)'> X </button></td>");
-                    } else {
-                        $("#tableResults").append("<tr id='bookRow'><td>" + book.title + "</td><td>" + book.name + "</td><td id='x'> X </td><td><button class='btn tableBtn' id='" + book.book_id + "'onclick='getDetails(this.id)'>Get Details</button></td><td><button class='btn removeBtn' id='" + book.book_id + "'onclick='removeBook(this.id)'> X </button></td>");
-                    } 
+                for (var i = 0; i < results.length; i++) {
+                        
+                    var book = results[i];
+                    $("#tableResults").append("<tr id='bookRow'><td>" + book.title + "</td><td>" + book.name + "</td><td><button class='btn tableBtn' id='" + book.book_id + "'onclick='getDetails(this.id)'>Get Details</button></td><td><button class='btn removeBtn' id='" + book.book_id + "'onclick='removeBook(this.id)'> X </button></td>");
                 }
+            }else {
+                $("#status").append("<p class='error'>Title not found.</p>");
             }
-
-            });
+          
             
         })
     }
 
     function searchByAuthor() {
         //console.log("Searching by author...");
-        var author = $("#author").val();
+        var checkAuthor = $("#author").val();
+        var author = checkSearchInput(checkAuthor);
+
         //console.log(author);
-        $.get("/author", {author:author}, function(data) { //Do the ajax request then do this when you come back.
+        $.get("/author", {author:author}, function(results) { //Do the ajax request then do this when you come back.
             //console.log("Back with author books: ");
             //console.log(data);
-            $.get("/session_id", function(user) {
-                var user_id = user;
-                $("#error").empty();
-            if(data < 1) {
-                $('#error').append("<p class='error'>Unable to find author</p>")
-            } else {
-                    $("#tableResults").empty();
-                    $("#detailResults").empty();
-                    $('#title').val("");
-                for (var i = 0; i < data.length; i++) {
-                    var book = data[i];
-                    //console.log(book);
-                    if(book.user_id != undefined && user_id > 0) {
-                        $("#tableResults").append("<tr id='bookRow'><td>" + book.title + "</td><td>" + book.name + "</td><td class='check'> &#10004; </td><td><button class='btn tableBtn' id='" + book.book_id + "'onclick='getDetails(this.id)'>Get Details</button></td><td><button class='btn removeBtn' id='" + book.book_id + "'onclick='removeBook(this.id)'> X </button></td>");
-                    } else {
-                        $("#tableResults").append("<tr id='bookRow'><td>" + book.title + "</td><td>" + book.name + "</td><td id='x'> X </td><td><button class='btn tableBtn' id='" + book.book_id + "'onclick='getDetails(this.id)'>Get Details</button></td><td><button class='btn removeBtn' id='" + book.book_id + "'onclick='removeBook(this.id)'> X </button></td>");
-                    } 
+            $("#status").empty();
+            if(results != null){
+                $("#tableResults").empty();
+                $("#detailResults").empty();
+                $('#author').val("");
+                for (var i = 0; i < results.length; i++) { 
+                    var book = results[i];
+                    $("#tableResults").append("<tr id='bookRow'><td>" + book.title + "</td><td>" + book.name + "</td><td><button class='btn tableBtn' id='" + book.book_id + "'onclick='getDetails(this.id)'>Get Details</button></td><td><button class='btn removeBtn' id='" + book.book_id + "'onclick='removeBook(this.id)'> X </button></td>");
                 }
+            }else {
+                $("#status").append("<p class='error'>Author not found.</p>");
             }
-
-            });
+           
      
         })
     }
 
     function searchByGenre() {
         //console.log("Searching by title...");
-        var genre = $("#genre").val();
+        var checkGenre = $("#genre").val();
+        var genre = checkSearchInput(checkGenre);
         //console.log(title);
-        $.get("/genre", {genre:genre}, function(data) { //Do the ajax request then do this when you come back.
-            $.get("/session_id", function(user) {
-                var user_id = user;
-                $("#error").empty();
-            if(data < 1) {
-                $('#error').append("<p class='error'>Unable to find genre</p>")
-            } else {
+        $.get("/genre", {genre:genre}, function(results) { 
+            $("#status").empty();
+            if(results != null){
                 $("#tableResults").empty();
                 $("#detailResults").empty();
-                $('#title').val("");
-                for (var i = 0; i < data.length; i++) {
-                   
-                    var book = data[i];
-                    //console.log(book);
-                    if(book.user_id != undefined && user_id > 0) {
-                        $("#tableResults").append("<tr id='bookRow'><td>" + book.title + "</td><td>" + book.name + "</td><td class='check'> &#10004; </td><td><button class='btn tableBtn' id='" + book.book_id + "'onclick='getDetails(this.id)'>Get Details</button></td><td><button class='btn removeBtn' id='" + book.book_id + "'onclick='removeBook(this.id)'> X </button></td>");
-                    } else {
-                        $("#tableResults").append("<tr id='bookRow'><td>" + book.title + "</td><td>" + book.name + "</td><td id='x'> X </td><td><button class='btn tableBtn' id='" + book.book_id + "'onclick='getDetails(this.id)'>Get Details</button></td><td><button class='btn removeBtn' id='" + book.book_id + "'onclick='removeBook(this.id)'> X </button></td>");
-                    } 
+                $('#genre').val("");
+                for (var i = 0; i < results.length; i++) {    
+                    var book = results[i];
+                    $("#tableResults").append("<tr id='bookRow'><td>" + book.title + "</td><td>" + book.name + "</td><td><button class='btn tableBtn' id='" + book.book_id + "'onclick='getDetails(this.id)'>Get Details</button></td><td><button class='btn removeBtn' id='" + book.book_id + "'onclick='removeBook(this.id)'> X </button></td>");
                 }
+            }else{
+                $("#status").append("<p class='error'>Genre not found.</p>");
             }
-            }); 
+           
         })
     }
 
     function getDetails(id) {
         var id = id;
-        console.log(id);
+        //console.log(id);
         $.get("/details", {id:id}, function(data) { //Do the ajax request then do this when you come back.
             //console.log("Back with: ");
             //console.log(data);
@@ -229,10 +214,8 @@ $(document).ready(function(){
                             $("#detailResults").append("<tr><td>" + book.title + "</td><td>" + book.blurb + "</td><td>" + book.name + "</td><td>" + book.genre + "</td><td>N/A</td><td><button class='btn tableBtn' id='" + book.book_id + "' onclick='checkInOut(this.id," + book.out + ")'>Check Out</button></td>");
                             }
                         }
-
                     })
                 })
-              
             })
         })
     }
@@ -251,59 +234,98 @@ $(document).ready(function(){
                 getReadBooks();
                 getCheckedBooks();
             } else {
-                $("#error").text("Please log in to remove book.");
+                $("#error").text("Please log into admin account to remove book.");
             }
         }).fail(function(result) {
-            $("#error").text("Please log in to remove book.");
+            $("#error").text("Please log in to admin account to remove book.");
         
         })
     }
 
     function addBook() {
-        var title = $("#btitle").val();
-        var blurb = $("#bblurb").val();
-        var author = $("#bauthor").val();
-        var genre = $("#bgenre").val();
-       
-         $.post('/add', {title:title, blurb:blurb, author:author, genre:genre}, function(result) {
+        $('#addBook').empty();
 
-            if (result && result.success) {
-                //console.log("Back with: " + result.success);
-                $('#addBook').empty();
-                $('#addBook').append("<p class='success'>Book has been added</p>");
-                $('#btitle').val("");
-                $('#bblurb').val("");
-                $('#bauthor').val("");
-                $('#uid').val("");
-                getBooks();
-            } else {
-                $('#addBook').append("<p class='error'>Please log in to add book</p>");
-            }
-        }).fail(function(result) {
-            $('#addBook').append("<p class='error'>Please log in to add book</p>");
+        var btitle = $("#btitle").val();
+        var bblurb = $("#bblurb").val();
+        var bauthor = $("#bauthor").val();
+        var bgenre = $("#bgenre").val();
+      
+
+        var book = checkInputBook(btitle, bblurb, bauthor, bgenre);
+        var title = book[0];
+        var blurb = book[1];
+        var author = book[2];
+        var genre = book[3];
         
-        }) 
+        if(book != false) {
+            $.post('/add', {title:title, blurb:blurb, author:author, genre:genre}, function(result) {
+
+                if (result && result.success) {
+                    //console.log("Back with: " + result.success);
+                    $('#addBook').empty();
+                    $('#addBook').append("<p class='success'>Book has been added</p>");
+                    $('#btitle').val("");
+                    $('#bblurb').val("");
+                    $('#bauthor').val("");
+                    $('#uid').val("");
+                    getBooks();
+                } else {
+                    $('#addBook').append("<p class='error'>Please log in to admin account to add book</p>");
+                }
+            }).fail(function(result) {
+                $('#addBook').empty();
+                $('#addBook').append("<p class='error'>Please log in to admin account to add book</p>");
+            
+            })  
+        } else {
+            $("#addBook").empty();
+            $('#addBook').append("<p class='error'>Please fill out all fields.</p>");
+        }
+        
+          
     }
 
     function addAuthor() {
-        var author = $("#aname").val();
+        var name = $("#aname").val();
+        $('#addAuthor').empty();
+        var author = checkInput(name);
 
-         $.post('/addauthor', {author:author}, function(result) {
+         $.post('/addauthor', {author: author}, function(result) {
 
             if (result && result.success) {
                 $('#addAuthor').empty();
                 $('#addAuthor').append("<p class='success'>Author has been added</p>");
                 //Clear form fields
                 $('#aname').val("");
+                //Reload Author
+                $.get("/authors", function(data) { 
+                    //console.log("Back with: ");
+                    //console.log(data);
+                    $("#error").empty();
+                    if(data < 1) {
+                        $('#error').append("<p class='error'>Unable to find any authors</p>")
+                    }
+                    $("#bauthor").empty();
+                    for (var i = 0; i < data.rows.length; i++) {
+                        var author = data.rows[i];
+                        //console.log(book);
+                        //$("#ulBooks").append("<li>" + book.title + " " + book.name + "</li>");
+            
+                        $("#bauthor").append("<option value='" + author.id + "'>" + author.name + "</option>");
+                    }
+                })
+
 
             } else {
-                $('#addAuthor').append("<p class='error'>Please log in to add author.</p>");
+                $('#addAuthor').empty();
+                $('#addAuthor').append("<p class='error'>Please log in to admin account to add author.</p>");
             }
         }).fail(function(result) {
-            $('#addAuthor').append("<p class='error'>Please log in to add author.</p>");
+            $('#addAuthor').append("<p class='error'>Please log in to admin account to add author.</p>");
 
         }) 
     }
+    
 
     //Check a book in or out
     function checkInOut(id, out) {
@@ -398,3 +420,34 @@ function getReadBooks(){
 })
 } 
 
+
+function checkInput(name) {
+     if (name == "") {
+        $("#addAuthor").empty();
+        $("#addAuthor").append("<p class='error'>Please enter an author's name.</</p>");
+        return false;
+    } else {
+        return name;
+    }  
+}
+
+function checkInputBook(btitle, bblurb, bauthor, bgenre) {
+    if (btitle == "" || bblurb == ""  || bauthor == "" || bgenre == "" ) {
+        $("#addBook").empty();
+        $("#addBook").append("<p class='error'>Please fill out all fields.</</p>");
+       return false;
+   } else {
+        var books = [btitle, bblurb, bauthor, bgenre];
+       return books;
+   }  
+}
+
+function checkSearchInput(input) {
+    if (input == "") {
+        $("#status").empty();
+        $("#status").append("<p class='error'>Please enter search term.</</p>");
+       return false;
+   } else {
+       return input;
+   }  
+}

@@ -1,8 +1,12 @@
 //const { getCheckedBooks } = require("../../models/librarymodels");
 
 function login() {
-	var username = $("#username").val();
-	var password = $("#password").val();
+	$("#status").empty();
+	if($("#username").val() == "" || $("#password").val() == ""){
+		$("#status").append("<p class='error'>Fill in all fields.</p>");
+	} else {
+		var username = $("#username").val();
+		var password = $("#password").val();
 
 	var params = {
 		username: username,
@@ -16,13 +20,18 @@ function login() {
 			$('#username').val("");
         	$('#password').val("");
 			$("#status").text("Successfully logged in.");
+			$("#login").hide();
+			$("#logout").show();
 			getBooks();
 			getCheckedBooks();
 			getReadBooks();
 		} else {
-			$("#status").text("Error logging in.");
+			$('#username').val("");
+        	$('#password').val("");
+			$("#status").append("<p class='error'>Error logging in.</p>");
 		}
 	});
+	}
 }
 
 function logout() {
@@ -30,6 +39,8 @@ function logout() {
 		if (result && result.success) {
 			$("#checkResults").empty();
 			$("#readResults").empty();
+			$("#login").show();
+			$("#logout").hide();
 			$("#status").text("Successfully logged out.");
 			getBooks();
 			
@@ -39,17 +50,6 @@ function logout() {
 	});
 }
 
-function getServerTime() {
-	$.get("/getServerTime", function(result) {
-		if (result && result.success) {
-			$("#status").text("Server time: " + result.time);
-		} else {
-			$("#status").text("Got a result back, but it wasn't a success. Your reponse should have had a 401 status code.");
-		}
-	}).fail(function(result) {
-		$("#status").text("Could not get server time.");
-	});
-}
 
 function register() {
     var username = $("#rusername").val();
