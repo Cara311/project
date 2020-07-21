@@ -163,6 +163,7 @@ function searchByGenre() {
 }
 
 function getDetails(id) {
+    empty();
     var id = id;
     //console.log(id);
     $.get("/details", {
@@ -360,6 +361,7 @@ function addAuthor() {
 function checkInOut(id, out) {
     var id = id;
     var out = out;
+    empty();
 
     $.get("/checkInOut", {
         id: id,

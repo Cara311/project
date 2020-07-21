@@ -140,3 +140,7 @@
     .menubtn {
       margin-right: 10px;
     }
+
+    #checked {
+      text-shadow: 2px 2px black;
+    }

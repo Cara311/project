@@ -42,6 +42,9 @@ function logout() {
 		if (result && result.success) {
 			$("#checkResults").empty();
 			$("#readResults").empty();
+			$("#addBook").empty();
+			$("#addAuthor").empty();
+			$("#status").empty();
 			$("#login").show();
 			$("#logout").hide();
 			$("#status").text("Successfully logged out.");
