@@ -1,4 +1,3 @@
-
 $(document).ready(function () {
     $('#btitle').val("");
     $('#bblurb').val("");
@@ -8,6 +7,7 @@ $(document).ready(function () {
     $('#author').val("");
     $('#genre').val("");
     $('#uid').val("");
+    empty();
     $("#logout").hide();
     getBooks();
 
@@ -80,13 +80,14 @@ function getBooks() {
 }
 
 function searchByTitle() {
+    empty();
     //console.log("Searching by title...");
     var checkTitle = $("#title").val();
     var title = checkSearchInput(checkTitle);
     //console.log(title);
     $.get("/title", {
         title: title
-    }, function (results) { 
+    }, function (results) {
         //console.log("Back with: ");
         //console.log(results);
         $("#status").empty();
@@ -108,6 +109,7 @@ function searchByTitle() {
 }
 
 function searchByAuthor() {
+    empty();
     //console.log("Searching by author...");
     var checkAuthor = $("#author").val();
     var author = checkSearchInput(checkAuthor);
@@ -115,7 +117,7 @@ function searchByAuthor() {
     //console.log(author);
     $.get("/author", {
         author: author
-    }, function (results) { 
+    }, function (results) {
         //console.log("Back with author books: ");
         //console.log(data);
         $("#status").empty();
@@ -136,6 +138,7 @@ function searchByAuthor() {
 }
 
 function searchByGenre() {
+    empty();
     //console.log("Searching by title...");
     var checkGenre = $("#genre").val();
     var genre = checkSearchInput(checkGenre);
@@ -164,7 +167,7 @@ function getDetails(id) {
     //console.log(id);
     $.get("/details", {
         id: id
-    }, function (data) { 
+    }, function (data) {
         //console.log("Back with: ");
         //console.log(data);
         $("#error").empty();
@@ -231,10 +234,11 @@ function getDetails(id) {
 
 function removeBook(id) {
     var id = id;
-    console.log(id);
+    //console.log(id);
+    empty();
     $.get("/remove", {
         id: id
-    }, function (result) { 
+    }, function (result) {
         //console.log("Back with: ");
         //console.log(result);
         $("#error").empty();
@@ -254,7 +258,7 @@ function removeBook(id) {
 }
 
 function addBook() {
-    $('#addBook').empty();
+    empty();
 
     var btitle = $("#btitle").val();
     var bblurb = $("#bblurb").val();
@@ -303,45 +307,52 @@ function addBook() {
 
 function addAuthor() {
     var name = $("#aname").val();
-    $('#addAuthor').empty();
     var author = checkInput(name);
+    //function to empty errors
+    empty();
 
-    $.post('/addauthor', {
-        author: author
-    }, function (result) {
+    if (author != false) {
+        $.post('/addauthor', {
+            author: author
+        }, function (result) {
 
-        if (result && result.success) {
-            $('#addAuthor').empty();
-            $('#addAuthor').append("<p class='success'>Author has been added</p>");
-            //Clear form fields
-            $('#aname').val("");
-            //Reload Author
-            $.get("/authors", function (data) {
-                //console.log("Back with: ");
-                //console.log(data);
-                $("#error").empty();
-                if (data < 1) {
-                    $('#error').append("<p class='error'>Unable to find any authors</p>")
-                }
-                $("#bauthor").empty();
-                for (var i = 0; i < data.rows.length; i++) {
-                    var author = data.rows[i];
-                    //console.log(book);
-                    //$("#ulBooks").append("<li>" + book.title + " " + book.name + "</li>");
+            if (result && result.success) {
+                $('#addAuthor').empty();
+                $('#addAuthor').append("<p class='success'>Author has been added</p>");
+                //Clear form fields
+                $('#aname').val("");
+                //Reload Author
+                $.get("/authors", function (data) {
+                    //console.log("Back with: ");
+                    //console.log(data);
+                    $("#error").empty();
+                    if (data < 1) {
+                        $('#error').append("<p class='error'>Unable to find any authors</p>")
+                    }
+                    $("#bauthor").empty();
+                    for (var i = 0; i < data.rows.length; i++) {
+                        var author = data.rows[i];
+                        //console.log(book);
+                        //$("#ulBooks").append("<li>" + book.title + " " + book.name + "</li>");
 
-                    $("#bauthor").append("<option value='" + author.id + "'>" + author.name + "</option>");
-                }
-            })
+                        $("#bauthor").append("<option value='" + author.id + "'>" + author.name + "</option>");
+                    }
+                })
 
 
-        } else {
-            $('#addAuthor').empty();
+            } else {
+                $('#addAuthor').empty();
+                $('#addAuthor').append("<p class='error'>Please log in to admin account to add author.</p>");
+            }
+        }).fail(function (result) {
             $('#addAuthor').append("<p class='error'>Please log in to admin account to add author.</p>");
-        }
-    }).fail(function (result) {
-        $('#addAuthor').append("<p class='error'>Please log in to admin account to add author.</p>");
 
-    })
+        })
+    } else {
+        $("#addAuthor").empty();
+        $('#addAuthor').append("<p class='error'>Please fill out all fields.</p>");
+    }
+
 }
 
 
@@ -490,4 +501,14 @@ function suggestion() {
         }
 
     })
+}
+
+function empty(){
+    $("#checked").empty();
+    $("#status").empty();
+    $("#error").empty();
+    $("#checkedBooks").empty();
+    $("#read").empty();
+    $("#addBook").empty();
+    $("#addAuthor").empty();
 }

@@ -94,7 +94,7 @@ function getBookByTitle(title, callback) {
 function getBookByAuthor(author, callback) {
   const sql = "SELECT book_id, title, blurb, name FROM book as b JOIN book_author AS a ON a.book_id = b.id JOIN authors ON authors.id = a.author_id AND authors.name=$1::text";
   var params = [author];
-  //console.log(params);
+  console.log(params);
   //console.log(params);
   pool.query(sql, params, function (err, result) {
     console.log(result);

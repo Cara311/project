@@ -17,6 +17,9 @@ function login() {
 			if (result && result.success) {
 				$("#message").empty();
 				$("#error").empty();
+				$("#status").empty();
+				$("#addBook").empty();
+				$("#addAuthor").empty();
 				$('#username').val("");
 				$('#password').val("");
 				$("#status").text("Successfully logged in.");

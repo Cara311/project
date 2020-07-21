@@ -77,9 +77,8 @@ function getBookByTitle(req, res) {
 
 //Find book by author search
 function getBookByAuthor(req, res) {
-  //console.log("Getting books by author"); 
   var name = req.query.author;
-
+  console.log("Getting books by author" + name); 
   librarymodels.getBookByAuthor(name, function (error, results) {
     if (!error) {
       res.json(results); //This is the callback function
