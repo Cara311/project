@@ -122,8 +122,6 @@ pool.query(sql, function(err, result) {
         console.log("Error in query: ")
         console.log(err);
     }
-
-    // Log this to the console for debugging purposes.
     console.log("Back from DB with result:");
     console.log(result.rows);
 });  */

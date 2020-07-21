@@ -1,15 +1,16 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-    <title>My Home Library</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" />
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-    <script src="scripts/library.js"></script>
-    <script src="scripts/login.js"></script>
-    <script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="/stylesheets/main.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Merriweather&family=Special+Elite&display=swap" rel="stylesheet"> 
+  <title>My Home Library</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" />
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+  <script src="scripts/library.js"></script>
+  <script src="scripts/login.js"></script>
+  <script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/main.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather&family=Special+Elite&display=swap" rel="stylesheet">
 </head>
 
 <body>
@@ -17,24 +18,28 @@
   <nav class="navbar navbar-default navbar-static-top navbar-inverse" id="navigation">
     <div class="container">
       <ul class="nav navbar-nav">
-       <!--  <li class="active">
+        <!--  <li class="active">
           <a href="home.html"><span class="glyphicon glyphicon-home"></span> Home</a>
         </li> -->
         <li>
-          <button class="btn-sm mainbtn menubtn" onclick="getBooks()"><span class="glyphicon glyphicon-lamp"></span> View Library</button>
+          <button class="btn-sm mainbtn menubtn" onclick="getBooks()"><span class="glyphicon glyphicon-lamp"></span>
+            View Library</button>
         </li>
         <!--
         <li>
           <button class="btn-sm mainbtn menubtn"onclick="suggestion()"><span class="glyphicon glyphicon-book"></span> Get Book Suggestion</button>
         </li>  -->
         <li>
-          <input type="text" id="title" placeholder="Title"><br><button class="btn-sm mainbtn" onclick="searchByTitle()"><span class="glyphicon glyphicon-search"></span>Search By Title</button>
+          <input type="text" id="title" placeholder="Title"><br><button class="btn-sm mainbtn"
+            onclick="searchByTitle()"><span class="glyphicon glyphicon-search"></span>Search By Title</button>
         </li>
         <li>
-          <input type="text" id="author" placeholder="Author"><br><button class="btn-sm mainbtn" onclick="searchByAuthor()"><span class="glyphicon glyphicon-search"></span>Search By Author</button>
+          <input type="text" id="author" placeholder="Author"><br><button class="btn-sm mainbtn"
+            onclick="searchByAuthor()"><span class="glyphicon glyphicon-search"></span>Search By Author</button>
         </li>
         <li>
-          <input type="text" id="genre" placeholder="Genre"><br><button class="btn-sm mainbtn" onclick="searchByGenre()"><span class="glyphicon glyphicon-search"></span>Search By Genre</button>
+          <input type="text" id="genre" placeholder="Genre"><br><button class="btn-sm mainbtn"
+            onclick="searchByGenre()"><span class="glyphicon glyphicon-search"></span>Search By Genre</button>
         </li>
         <li>
           <input type="text" id="username" placeholder="username"><br>
@@ -46,126 +51,126 @@
     </div>
   </nav>
 
- <!-- Page Wrapper -->
-<div style="background: url(/images/books.jpg)" class="page-holder bg-cover">
+  <!-- Page Wrapper -->
+  <div style="background: url(/images/books.jpg)" class="page-holder bg-cover">
 
-  <div class="container py-5">
-    <header class="text-center text-white py-5">
-      <div id="status"></div>
-      <h1 class="display-4 font-weight-bold mb-4">My Home Library</h1>
-      <p class="lead mb-0" id="sub">Discover What's in Your Library</p>
-    </header>
-    
+    <div class="container py-5">
+      <header class="text-center text-white py-5">
+        <div id="status"></div>
+        <h1 class="display-4 font-weight-bold mb-4">My Home Library</h1>
+        <p class="lead mb-0" id="sub">Discover What's in Your Library</p>
+      </header>
 
 
-    <div class="row">
-    
-      <div class="col-sm-6">
-        <div class="card">
-          <div class="card-header">
+
+      <div class="row">
+
+        <div class="col-sm-6">
+          <div class="card">
+            <div class="card-header">
               <h2>Your Library</h2>
               <div id="error"></div>
               <div id="message"></div>
-          </div>
-          <div class="card-body">
+            </div>
+            <div class="card-body">
               <table class="table" id="libraryTable">
-                  <thead>
-                    <tr>
-                      <th>Title</th>
-                      <th>Author</th>
-                      <th>Details</th>
-                      <th>Remove</th>
-                    </tr>
-                  </thead>
-                  <tbody id="tableResults">
-                  </tbody>
-                </table>
+                <thead>
+                  <tr>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Details</th>
+                    <th>Remove</th>
+                  </tr>
+                </thead>
+                <tbody id="tableResults">
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
-      </div>
-      
-      <div class="col-sm-3">
-        <div class="card">
-          <div class="card-header">
+
+        <div class="col-sm-3">
+          <div class="card">
+            <div class="card-header">
               <h2>Books Checked Out</h2>
               <div id="checkedBooks"></div>
-          </div>
-          <div class="card-body">
+            </div>
+            <div class="card-body">
               <table class="table" id="checkedTable">
-                  <thead>
-                    <tr>
-                      <th>Title</th>
-                    </tr>
-                  </thead>
-                  <tbody id="checkResults">
-                  </tbody>
-                </table>
+                <thead>
+                  <tr>
+                    <th>Title</th>
+                  </tr>
+                </thead>
+                <tbody id="checkResults">
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
-      </div>  
-      
-      <div class="col-sm-3">
-        <div class="card">
-          <div class="card-header">
+
+        <div class="col-sm-3">
+          <div class="card">
+            <div class="card-header">
               <h2>Books Read</h2>
               <div id="read"></div>
-          </div>
-          <div class="card-body">
-              <table class="table" id="readTable">
-                  <thead>
-                    <tr>
-                      <th>Title</th>
-                    </tr>
-                  </thead>
-                  <tbody id="readResults">
-                  </tbody>
-                </table>
             </div>
+            <div class="card-body">
+              <table class="table" id="readTable">
+                <thead>
+                  <tr>
+                    <th>Title</th>
+                  </tr>
+                </thead>
+                <tbody id="readResults">
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
 
 
-    <div class="row">
-      <div class="col-sm-1"></div>
-      <div class="col-sm-10">
-        <div class="card">
-          <div class="card-header">
+      <div class="row">
+        <div class="col-sm-1"></div>
+        <div class="col-sm-10">
+          <div class="card">
+            <div class="card-header">
               <h2>Book Details</h2>
               <div id="checked"></div>
-          </div>
-          <div class="card-body">
+            </div>
+            <div class="card-body">
               <table class="table" id="libraryTable">
-                  <thead>
-                    <tr>
-                      <th>Title</th>
-                      <th>Blurb</th>
-                      <th>Author</th>
-                      <th>Genre</th>
-                      <th>Mark As Read</th>
-                      <th>Check Out/In</th>
-                    </tr>
-                  </thead>
-                  <tbody id="detailResults">
-                  </tbody>
-                </table>
+                <thead>
+                  <tr>
+                    <th>Title</th>
+                    <th>Blurb</th>
+                    <th>Author</th>
+                    <th>Genre</th>
+                    <th>Mark As Read</th>
+                    <th>Check Out/In</th>
+                  </tr>
+                </thead>
+                <tbody id="detailResults">
+                </tbody>
+              </table>
+            </div>
           </div>
-      </div>
-      <div class="col-sm-1"></div>
-      </div>
-      
-    </div>
+          <div class="col-sm-1"></div>
+        </div>
 
-    <div class="row">
-      <div class="col-sm-3">
-        <div class="card">
-          <div class="card-header">
+      </div>
+
+      <div class="row">
+        <div class="col-sm-3">
+          <div class="card">
+            <div class="card-header">
               <h2>Add Book</h2>
               <div id="addBook"></div>
-          </div>
-          <div class="card-body">
-            <!-- <form class="form-inline" id="bookForm"> -->
-             <!--  <label for="uid">Your User Id:</label>
+            </div>
+            <div class="card-body">
+              <!-- <form class="form-inline" id="bookForm"> -->
+              <!--  <label for="uid">Your User Id:</label>
               <input type="number" class="form-control" placeholder="Enter User Id" id="uid"> -->
               <label for="btitle">Book Title:</label>
               <input type="text" class="form-control" placeholder="Enter title" id="btitle" required>
@@ -177,35 +182,35 @@
               <label for="bgenre">Genre:</label>
               <select name="bgenre" id="bgenre" required>
               </select><br><br>
-            
+
               <button class="btn-lg mainbtn" onclick="addBook()">Add Book</button>
-            <!-- </form>   -->
+              <!-- </form>   -->
+            </div>
           </div>
         </div>
-      </div>
-      <div class="col-sm-3">
-        <div class="card">
-          <div class="card-header">
+        <div class="col-sm-3">
+          <div class="card">
+            <div class="card-header">
               <h2>Add Author</h2>
               <div id="addAuthor"></div>
               <label for="btitle">Author Name:</label>
               <input type="text" class="form-control" placeholder="Enter Name" id="aname" required><br><br>
               <button class="btn-lg mainbtn" onclick="addAuthor()">Add Author</button>
-          </div>
-          <div class="card-body">
+            </div>
+            <div class="card-body">
+            </div>
           </div>
         </div>
+        <div class="col-sm-6"></div>
+
       </div>
-      <div class="col-sm-6"></div>
+
 
     </div>
 
-     
-</div>
 
-  
 
 
 </body>
-</html>
 
+</html>
